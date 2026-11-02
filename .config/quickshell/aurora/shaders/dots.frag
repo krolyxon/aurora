@@ -1,5 +1,5 @@
 #version 440
-// Dot mask, ported from glyph-rice (github.com/Nebelung-cloud/glyph-rice, GPL-3.0).
+// Dot mask. Parts from glyph-rice (GPL-3.0).
 // Turns an item into a matrix of LED dots. Each dot takes the colour at the centre of its cell, so every dot has the
 // same size and an even tone, like the Glyph lights on the back of the phone. Luminance only: the result is monochrome.
 // Rebuild after editing: qsb --qt6 -o dots.frag.qsb dots.frag (qt6-shadertools)

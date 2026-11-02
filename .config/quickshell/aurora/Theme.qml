@@ -3,7 +3,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// The design system: Nothing OS's shapes, dots and type (after glyph-rice) in Android Material You colours from matugen
+// The design system: Nothing OS's shapes, dots and type in Android Material You colours from matugen
 // (~/.cache/matugen/aurora.json, written by Wall.apply/recolor, hot-reloaded), plus fonts, motion and all icon glyphs.
 Singleton {
     id: root
@@ -19,15 +19,15 @@ Singleton {
     readonly property bool barVertical: Settings.barLayout === "vertical"   // docked at the left edge instead of the top
     readonly property int barSize: barVertical ? Math.max(48, Settings.barWidth) : Math.max(32, Settings.barSize)   // its thickness
     readonly property bool barFloat: Settings.barFloat               // a floating pill instead of a strip along the edge
-    readonly property int barGap: barFloat ? 14 : 0                  // the pill's distance from the screen edges (glyph-rice)
-    // ... and from the windows: glyph's 14 too, there it is Hyprland's gaps_out; here only the part gaps_out doesn't cover
+    readonly property int barGap: barFloat ? 14 : 0                  // the pill's distance from the screen edges
+    // ... and from the windows: 14 too, minus what Hyprland's gaps_out already covers
     readonly property int barInner: barFloat ? Math.max(0, barGap - (HyprConf.values["general:gaps_out"] || 0)) : 0
     readonly property int barSpan: barSize + barGap + barInner       // the bar window, across the bar
     readonly property int barTop: barVertical ? 0 : barSpan          // what the bar reserves at the top
     readonly property int barLeft: barVertical ? barSpan : 0         // ... and at the left
     readonly property real barAlpha: Settings.barAlpha
 
-    // ---- motion: ease-out-quart without overshoot (glyph's "glide"); Settings.motion off = instant ----
+    // ---- motion: ease-out-quart without overshoot ("glide"); Settings.motion off = instant ----
     readonly property bool motion: Settings.motion
     readonly property int t: motion ? 350 : 0
     readonly property var glide: [0.25, 1, 0.5, 1, 1, 1]

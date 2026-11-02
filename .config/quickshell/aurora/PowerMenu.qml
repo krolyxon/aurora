@@ -7,7 +7,6 @@ import Quickshell.Hyprland
 // column of Doto words: the selected one large with the live dot, the rest dim; uptime in a ring of dots on the right.
 // Up/Down/Tab or hover pick, Enter/click runs, typing filters, Esc or a click on the background closes.
 // Destructive ones need a second Enter/click within 3s (the word turns the error colour).
-// After glyph-rice (github.com/Nebelung-cloud/glyph-rice, GPL-3.0), power/Power.qml.
 PanelWindow {
     id: win
     property bool opened: false

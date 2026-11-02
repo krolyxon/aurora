@@ -2,7 +2,7 @@ import QtQuick
 
 // Wide pill toggle (Wi-Fi, Bluetooth). On = white with black text, icon in a circle, name over a caps sub line.
 // Click = toggle (`clicked`); the chevron or a right click = details (`menu`).
-// Ported from glyph-rice (github.com/Nebelung-cloud/glyph-rice, GPL-3.0), quick/Quick.qml (Pill).
+// Parts from glyph-rice (GPL-3.0), quick/Quick.qml (Pill).
 Rectangle {
     id: pill
 

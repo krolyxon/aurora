@@ -2,7 +2,7 @@ import QtQuick
 
 // Round toggle with a caption under it (control panel). Off = dark circle, on = white circle with a black icon,
 // live = the accent circle (recording). Right click = menu (`picked` = its options are open: caption turns white).
-// Ported from glyph-rice (github.com/Nebelung-cloud/glyph-rice, GPL-3.0), quick/Quick.qml (Tile).
+// Parts from glyph-rice (GPL-3.0), quick/Quick.qml (Tile).
 Column {
     id: tile
 

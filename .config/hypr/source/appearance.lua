@@ -93,7 +93,7 @@ hl.config({
 })
 
 --------------------------------------------------
--- Animations (glyph-rice's set, retimed to aurora's motion: speed is in 100ms, aurora's panels take 350ms)
+-- Animations (timed to aurora's motion: speed is in 100ms, aurora's panels take 350ms)
 --------------------------------------------------
 -- aurora's glide (Theme.glide): ease-out-quart without overshoot
 hl.curve("glide", { type = "bezier", points = { { 0.25, 1 }, { 0.5, 1 } } })

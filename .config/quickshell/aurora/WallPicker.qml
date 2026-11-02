@@ -8,7 +8,7 @@ import Quickshell.Wayland
 // a card at the bottom holds folder chips, the look (mono dots / colour dots / photo), the filter and the thumbnails.
 // Vim-style: the grid has the keyboard (hjkl/arrows move, g/G first/last, ctrl+d/u page), `/` searches (enter keeps the
 // filter, esc clears it), `v` cycles the look, Tab / Shift+Tab the folders. Enter / double-click applies (stays open to
-// try a few), Esc / q or a click on the preview closes. After glyph-rice (github.com/Nebelung-cloud/glyph-rice, GPL-3.0), wall/Walls.qml.
+// try a few), Esc / q or a click on the preview closes.
 PanelWindow {
     id: win
     property bool opened: false

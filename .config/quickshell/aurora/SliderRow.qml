@@ -2,7 +2,7 @@ import QtQuick
 
 // Level slider (control panel): a pill whose filled part is white with the icon in it, the rest a row of dots,
 // the value in a chip on the right. Click/drag sets (the wheel scrolls past it), the icon end toggles mute (iconClicked).
-// Ported from glyph-rice (github.com/Nebelung-cloud/glyph-rice, GPL-3.0), quick/Quick.qml (Slider).
+// Parts from glyph-rice (GPL-3.0), quick/Quick.qml (Slider).
 Item {
     id: r
     property string icon: ""

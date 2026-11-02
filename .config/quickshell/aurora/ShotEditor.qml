@@ -8,7 +8,6 @@ import Quickshell.Wayland
 // with grabToImage at the shot's own size: Ctrl+C / Enter = copy (a /tmp file: the shot's own if it was one, a new one
 // if it was kept, so a saved shot is never changed), Ctrl+S = also save to ~/pix/ss. P A R B T tool, 1-4 ink, [ ] size,
 // Ctrl+Z undo, Esc discards. The inks are content baked into the image, not UI: the one place with fixed colours (+ the accent).
-// After glyph-rice (github.com/Nebelung-cloud/glyph-rice, GPL-3.0), shot/Editor.qml.
 Scope {
     id: root
 

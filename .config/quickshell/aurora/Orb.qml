@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Shapes
 
 // The halftone orb on an empty desktop (no wallpaper): equal dots, a radial gradient sets their brightness.
-// phase (s) = a slow breath. Ported from glyph-rice (github.com/Nebelung-cloud/glyph-rice, GPL-3.0), components/Orb.qml.
+// phase (s) = a slow breath. Parts from glyph-rice (GPL-3.0), components/Orb.qml.
 Shape {
     property real phase: 0
 

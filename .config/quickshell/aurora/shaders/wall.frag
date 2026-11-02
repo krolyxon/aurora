@@ -1,5 +1,5 @@
 #version 440
-// Wallpaper, ported from glyph-rice (github.com/Nebelung-cloud/glyph-rice, GPL-3.0).
+// Wallpaper. Parts from glyph-rice (GPL-3.0).
 // The image as a matrix of LED dots (dots 1) or as a photo (dots 0); mono 1 = in the theme's tone (lo..hi), 0 = own colours.
 // A change runs as a wave from origin: each cell decides as a whole, srcA before the front, srcB behind it. On the crest a
 // cell is always a dot that swells and brightens, so the photo dissolves into the matrix and comes back as the new one.

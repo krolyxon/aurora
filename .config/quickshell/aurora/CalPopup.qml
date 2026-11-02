@@ -8,7 +8,6 @@ import Quickshell.Hyprland
 // month calendar | weather (now, next 4 days, daylight) | system (cpu/mem/gpu rings, top processes, threads) | net | media.
 // Calendar: Monday first, ISO week numbers, today in a primary circle. Scroll over it / arrows change the month,
 // up / down the year, space = back to today, Esc closes. SysStats samples its details only while this is open.
-// After glyph-rice (github.com/Nebelung-cloud/glyph-rice, GPL-3.0), cal/Cal.qml and deck/Deck.qml.
 PanelWindow {
     id: win
     property bool opened: false

@@ -37,7 +37,7 @@ hl.window_rule({
     float = true,
 })
 
--- aurora's settings app: a normal window, opened maximized (glyph's full-screen prefs layout, but still a window)
+-- aurora's settings app: a normal window, opened maximized (a full-screen layout, but still a window)
 hl.window_rule({
     name = "aurora-settings",
 

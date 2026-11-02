@@ -3,7 +3,6 @@ import QtQuick.Layouts
 import Quickshell.Services.UPower
 
 // Battery block (SysPage, settings app > Power): charge in Doto, state, a segment bar (accent when low), details.
-// After glyph-rice's battery card (github.com/Nebelung-cloud/glyph-rice, GPL-3.0), bar/Bar.qml.
 ColumnLayout {
     id: root
     readonly property var bat: UPower.displayDevice

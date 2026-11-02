@@ -8,7 +8,6 @@ import Quickshell.Wayland
 // (Tab cycles: all / text / links / images), the history as rows (type in a circle: text, link, code, the colour
 // itself, the image as dots; a Doto number) and the selected entry in full on the right.
 // Enter copies + closes, Delete removes, Esc or a click outside closes.
-// After glyph-rice (github.com/Nebelung-cloud/glyph-rice, GPL-3.0), clip/Clip.qml.
 PanelWindow {
     id: win
     property bool opened: false

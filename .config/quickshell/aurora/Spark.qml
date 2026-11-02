@@ -1,7 +1,7 @@
 import QtQuick
 
 // History as a dot matrix (cpu): one column per sample, the top lit dot white, the ones under it grey, the rest unlit.
-// Ported from glyph-rice (github.com/Nebelung-cloud/glyph-rice, GPL-3.0), home/Home.qml (system widget).
+// Parts from glyph-rice (GPL-3.0), home/Home.qml (system widget).
 Item {
     id: s
     property var values: []

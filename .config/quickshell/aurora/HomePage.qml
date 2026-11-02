@@ -6,7 +6,6 @@ import Quickshell.Services.Pipewire
 
 // Control panel > home: Wi-Fi / Bluetooth pills (chevron = their tab), round toggles, desktop actions, capture,
 // volume + brightness, power profile, the player, the latest notifications. Session actions: the header's power button.
-// After glyph-rice's quick settings (github.com/Nebelung-cloud/glyph-rice, GPL-3.0), quick/Quick.qml.
 Flickable {
     id: page
     signal closeRequested()

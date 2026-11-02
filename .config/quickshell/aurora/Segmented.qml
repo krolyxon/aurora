@@ -1,8 +1,8 @@
 import QtQuick
 
 // One-of-n choice: a pill track where the white cell slides to the selected option.
-// options: [{value, label, ticks}] (ticks = optional strength marks, how many of 4 are lit, like glyph's power modes).
-// Ported from glyph-rice (github.com/Nebelung-cloud/glyph-rice, GPL-3.0), quick/Quick.qml (power modes).
+// options: [{value, label, ticks}] (ticks = optional strength marks, how many of 4 are lit, like the power modes).
+// Parts from glyph-rice (GPL-3.0), quick/Quick.qml (power modes).
 Rectangle {
     id: root
 

@@ -2,7 +2,7 @@ import QtQuick
 
 // Segment bar, like the Glyph strips on the phone: the fraction f is lit. vertical = fills bottom-up.
 // Give it a width and a height; segments share the length.
-// Ported from glyph-rice (github.com/Nebelung-cloud/glyph-rice, GPL-3.0), components/Seg.qml.
+// Parts from glyph-rice (GPL-3.0), components/Seg.qml.
 Grid {
     id: root
 

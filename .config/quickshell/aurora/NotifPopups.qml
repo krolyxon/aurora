@@ -7,7 +7,6 @@ import Quickshell.Services.Notifications
 // Toasts as an island at the top centre, under the bar: up to 4 cards, newest on top. Each drops in as a small pill and
 // grows into its card; leaving, it shrinks back and the ones below slide up. Hovering holds them all, click = the app's
 // default action, the × on hover only drops the toast (the notification stays in the history), other actions are pills.
-// After glyph-rice's island (github.com/Nebelung-cloud/glyph-rice, GPL-3.0), glyph/Glyph.qml.
 PanelWindow {
     id: win
     property bool suppressed: false      // hidden while the control panel is open

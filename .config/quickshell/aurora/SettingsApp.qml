@@ -3,12 +3,12 @@ import QtQuick.Layouts
 import Quickshell
 
 // The settings app: a normal Hyprland window (class org.quickshell, title "aurora settings"), opened maximized by a
-// window rule. glyph's prefs layout: the sections as a column of Doto words (the selected one large with the live dot),
+// window rule. The sections as a column of Doto words (the selected one large with the live dot),
 // the page on the right under a caption, key hints at the bottom. One Loader, so only the shown section runs.
 // Tab / Shift+Tab, Up/Down (outside text fields) or Ctrl+J/K = sections, Esc closes.
 // Ctrl+F (or the search button) searches every setting (SetIndex): the results replace the page, Enter / click opens
 // the section, scrolls to the row and flashes it.
-// Opened with the `settings [section]` IPC. After glyph-rice (github.com/Nebelung-cloud/glyph-rice, GPL-3.0), prefs/Prefs.qml.
+// Opened with the `settings [section]` IPC.
 FloatingWindow {
     id: win
     property bool opened: false

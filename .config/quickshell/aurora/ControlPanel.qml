@@ -6,7 +6,6 @@ import Quickshell.Hyprland
 
 // Control panel: a card at the top right, as tall as the shown page (pages scroll when the screen is shorter).
 // Header: Doto clock, date, settings + power. Tabs are chips. Slides in from the right.
-// After glyph-rice's quick settings (github.com/Nebelung-cloud/glyph-rice, GPL-3.0), quick/Quick.qml.
 PanelWindow {
     id: win
     property bool opened: false

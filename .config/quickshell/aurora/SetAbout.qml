@@ -124,10 +124,9 @@ Flickable {
             color: Theme.fgDim
             font.family: Theme.ui
             font.pixelSize: 14
-            text: "The look follows Nothing OS through glyph-rice by Nebelung-cloud (GPL-3.0): its design language, "
-                + "dot-matrix shaders and several components. Fonts: Doto, Space Grotesk, Space Mono (SIL OFL). "
-                + "Colours: matugen (Material You). Nothing, Nothing OS and Glyph are trademarks of Nothing Technology Ltd; "
-                + "this is a fan setup, not affiliated with Nothing."
+            text: "The dot-matrix shaders and some components started as ports from glyph-rice by Nebelung-cloud "
+                + "(GPL-3.0). Fonts: Doto, Space Grotesk, Space Mono (SIL OFL). Colours: matugen (Material You). Nothing, Nothing OS and Glyph are trademarks of Nothing Technology Ltd; "
+                + "this is a fan project, not affiliated with Nothing."
         }
     }
 }

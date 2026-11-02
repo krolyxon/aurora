@@ -7,8 +7,7 @@ import Quickshell.Wayland
 // (Agents.bt: confirm a passkey, type a PIN/passkey, or show one to type on the device). Polkit wins
 // if both are pending. Overlay layer with exclusive keyboard on the focused monitor; Enter accepts,
 // Esc cancels. Typed text is cleared after every attempt, never logged.
-// Looks like glyph's lock surface (github.com/Nebelung-cloud/glyph-rice, GPL-3.0, lock/LockSurface.qml): a lock in a ring
-// of dots, the password in a pill as dots with the live caret; a wrong password shakes it.
+// Looks: a lock in a ring of dots, the password in a pill as dots with the live caret; a wrong password shakes it.
 PanelWindow {
     id: win
     readonly property var flow: Agents.flow

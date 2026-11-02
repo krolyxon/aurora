@@ -2,7 +2,7 @@ import QtQuick
 
 // A ring of n LED dots on the item's edge; the fraction f lights clockwise from 12 o'clock, in a wave (8 ms a dot).
 // Dot centres sit on the edge, so leave dot/2 of room around it.
-// Ported from glyph-rice (github.com/Nebelung-cloud/glyph-rice, GPL-3.0), components/Ring.qml.
+// Parts from glyph-rice (GPL-3.0), components/Ring.qml.
 Item {
     id: root
 

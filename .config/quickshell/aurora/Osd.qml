@@ -7,7 +7,7 @@ import Quickshell.Services.Pipewire
 // Volume / mic / brightness on the right screen edge, like the Glyph strips on the phone: 20 segments fill bottom-up
 // (the lit ones glow), a capsule next to them shows the icon and the value. Click-through, fades out after
 // Settings.osdTimeout. Volume + mute come natively from Pipewire (keys, wpctl, panel); brightness is pushed in with
-// show() from the `bright` IPC call. After glyph-rice (github.com/Nebelung-cloud/glyph-rice, GPL-3.0), glyph/Glyph.qml.
+// show() from the `bright` IPC call.
 PanelWindow {
     id: win
     property bool suppressed: false      // hidden while the control panel is open

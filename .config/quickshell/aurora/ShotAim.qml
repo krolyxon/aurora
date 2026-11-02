@@ -11,7 +11,6 @@ import Quickshell.Wayland
 // Esc = cancel. Modes and timer are chips in a pill at the bottom.
 // After the shot: the area flashes (recording: a live-coloured frame around it) and a card slides in at the bottom
 // right for a few seconds (longer while hovered): click the shot to edit it (ShotEditor), "save" keeps it.
-// After glyph-rice (github.com/Nebelung-cloud/glyph-rice, GPL-3.0), shot/Shot.qml.
 Scope {
     id: root
 

@@ -6,7 +6,6 @@ import Quickshell.Hyprland
 // A row, or a column in the vertical bar. Active = a long pill (primary on the focused monitor, grey on the others),
 // occupied = grey dot, empty = dim dot,
 // urgent = the live colour. Click = go there, wheel = the next / previous occupied one.
-// After glyph-rice (github.com/Nebelung-cloud/glyph-rice, GPL-3.0), bar/Bar.qml.
 Grid {
     id: ws
     spacing: 6

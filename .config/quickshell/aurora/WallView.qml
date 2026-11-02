@@ -4,7 +4,7 @@ import QtQuick
 // "colour" = dots in the image's own colours, "photo" = the plain image. A new path arrives as a wave from `origin`;
 // two images take turns (the shown one and the incoming one), the old one is unloaded after the wave.
 // An empty path = transparent (the dot grid shows through). `opaque` = the image covers everything.
-// Ported from glyph-rice (github.com/Nebelung-cloud/glyph-rice, GPL-3.0), components/Wall.qml.
+// Parts from glyph-rice (GPL-3.0), components/Wall.qml.
 Item {
     id: root
 

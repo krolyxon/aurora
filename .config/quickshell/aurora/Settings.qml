@@ -120,7 +120,7 @@ Singleton {
             property int barSize: 40                   // height of the bar (Doto clock from 40 up)
             property string barLayout: "horizontal"    // horizontal (top edge) | vertical (left edge)
             property int barWidth: 56                  // width of the vertical bar
-            property bool barFloat: false              // a rounded pill held off the screen edges (glyph-rice) instead of a strip
+            property bool barFloat: false              // a rounded pill held off the screen edges instead of a strip
             property string wallLook: "dots"           // dots | colour | photo: how aurora draws the wallpaper (WallView)
             property int wallPitch: 10                 // dot step, px
             property int wallBright: 85                // %, from the background to the full image

@@ -1,8 +1,8 @@
 import QtQuick
 import QtQuick.Shapes
 
-// A track cover as LED dots in a circle; without a cover, the conical grey gradient from glyph's concept.
-// Ported from glyph-rice (github.com/Nebelung-cloud/glyph-rice, GPL-3.0), components/Art.qml.
+// A track cover as LED dots in a circle; without a cover, a conical grey gradient.
+// Parts from glyph-rice (GPL-3.0), components/Art.qml.
 Item {
     id: root
 

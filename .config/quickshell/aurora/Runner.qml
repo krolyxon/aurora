@@ -10,8 +10,7 @@ import Quickshell.Hyprland
 // aurora commands and every executable on $PATH, ranked by match and launch count.
 // `=expr` calculator (Enter copies), `>cmd` runs a shell command. Ctrl+Enter runs in the terminal.
 // dmenu mode (`aurora-run -d`, `dmenu` IPC): plain list from the script's stdin, the choice goes back over a fifo.
-// Looks like glyph's launcher (github.com/Nebelung-cloud/glyph-rice, GPL-3.0, launcher/Launcher.qml): a card over the
-// dimmed screen, a search pill with the live caret, mode chips (all / run = `>` / calc = `=`), round icons in rows.
+// Looks: a card over the dimmed screen, a search pill with the live caret, mode chips (all / run = `>` / calc = `=`), round icons in rows.
 PanelWindow {
     id: win
     property bool opened: false

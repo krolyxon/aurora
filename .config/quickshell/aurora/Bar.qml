@@ -7,14 +7,13 @@ import Quickshell.Services.Pipewire
 import Quickshell.Services.UPower
 
 // The bar: a strip docked at the top of every monitor, or at the left edge (Settings.barLayout "vertical", like
-// glyph-rice's; the groups are Grids that turn from rows into columns). Settings.barFloat: a rounded pill held off the
-// screen edges (glyph's look) instead of a strip along the edge.
+// the groups are Grids that turn from rows into columns). Settings.barFloat: a rounded pill held off the
+// screen edges instead of a strip along the edge.
 // Left / top: the mark (a dotted ring: click = runner; its centre turns the live colour while something records or listens,
 // the ring lights up in a wave on a new notification), this monitor's workspaces as dots, the cat.
 // Centre: time · day, or Doto hours over minutes over the day when vertical (click = calendar).
 // Right / bottom: tray, recording, privacy, caffeine/airplane, headset, volume, net, bt, battery.
 // Clicks open the same panel tabs as always.
-// After glyph-rice (github.com/Nebelung-cloud/glyph-rice, GPL-3.0), bar/Bar.qml.
 PanelWindow {
     id: bar
     required property var modelData

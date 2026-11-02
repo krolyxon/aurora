@@ -1,4 +1,4 @@
-/* aurora's Nothing OS look for GTK3 and GTK4 (after glyph-rice's gtk.css, github.com/Nebelung-cloud/glyph-rice, GPL-3.0),
+/* aurora's Nothing OS look for GTK3 and GTK4 (parts from glyph-rice's gtk.css, GPL-3.0),
    on top of adw-gtk3 / libadwaita. Imported by gtk-3.0/gtk.css and gtk-4.0/gtk.css after matugen's colours
    (~/.cache/matugen/gtk.css: libadwaita names + aurora_bg/s1/s2/s3/fill/live/... like Theme.qml).
    Static on purpose: edits show in newly started apps, no matugen run. Only properties BOTH versions parse

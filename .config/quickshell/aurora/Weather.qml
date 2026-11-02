@@ -7,7 +7,6 @@ import Quickshell.Io
 // restart shows the last one at once. Place = Settings.weatherLoc: "" = by IP (ipinfo.io), "lat,lon", or a place name
 // (open-meteo geocoding). Offline / overloaded -> retry in 2 min. QML timers stand still during suspend, so the popup
 // calls poke() on open to catch up.
-// After glyph-rice (github.com/Nebelung-cloud/glyph-rice, GPL-3.0), services/Weather.qml.
 Singleton {
     id: root
     readonly property string cacheFile: Quickshell.env("HOME") + "/.cache/aurora/weather.json"

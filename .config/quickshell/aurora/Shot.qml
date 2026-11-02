@@ -12,7 +12,6 @@ import Quickshell.Hyprland
 // viewfinder or editor, or "save" on the card, puts it in ~/pix/ss. After a shot ShotAim flashes the area and shows a
 // card, a click on it opens ShotEditor (`editing`).
 // Record mode hands the area to Rec (wf-recorder). OCR is the separate `ocr` script (slurp + grim + tesseract).
-// After glyph-rice (github.com/Nebelung-cloud/glyph-rice, GPL-3.0), shot/Shot.qml.
 Singleton {
     id: root
 

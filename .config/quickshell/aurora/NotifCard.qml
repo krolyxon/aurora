@@ -6,7 +6,7 @@ import Quickshell.Services.Notifications
 
 // A notification (panel history, toasts): the app icon in a circle (dots / mono / colour, Settings.appIcons),
 // APP · 3 MIN, summary, body, other actions as pills. Click = the default action, if the app sent one.
-// Critical = accent border. Ported from glyph-rice (github.com/Nebelung-cloud/glyph-rice, GPL-3.0), quick/Quick.qml.
+// Critical = accent border. Parts from glyph-rice (GPL-3.0), quick/Quick.qml.
 Rectangle {
     id: card
     required property var n          // Notification

@@ -52,7 +52,6 @@ Singleton {
     Timer { interval: 1000; running: true; repeat: true; triggeredOnStart: true; onTriggered: root.sample() }
 
     // ---- details for the calendar dashboard: sampled every 2s, only while `detailed` (CalPopup sets it while open) ----
-    // After glyph-rice (github.com/Nebelung-cloud/glyph-rice, GPL-3.0), services/SysStats.qml.
     property bool detailed: false
     property var cores: []               // 0..1 per thread
     property real cpuTemp: 0             // °C, 0 = no sensor found

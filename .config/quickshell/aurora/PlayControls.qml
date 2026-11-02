@@ -1,7 +1,7 @@
 import QtQuick
 
 // previous · play/pause in the accent circle (the live thing on a media card) · next.
-// Ported from glyph-rice (github.com/Nebelung-cloud/glyph-rice, GPL-3.0), components/Controls.qml.
+// Parts from glyph-rice (GPL-3.0), components/Controls.qml.
 Row {
     id: root
 

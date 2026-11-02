@@ -1,9 +1,8 @@
 import QtQuick
 import QtQuick.Layouts
 
-// A settings row: label (+ optional hint) and glyph's pill toggle on the right; the whole row is clickable.
+// A settings row: label (+ optional hint) and a pill toggle on the right; the whole row is clickable.
 // The toggle: off = a dark pill with a dim knob on the left, on = the primary fill runs to the right with a dot.
-// After glyph-rice (github.com/Nebelung-cloud/glyph-rice, GPL-3.0), prefs/Toggle.qml.
 Rectangle {
     id: s
     property string label: ""

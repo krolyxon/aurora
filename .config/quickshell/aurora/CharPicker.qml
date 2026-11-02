@@ -6,8 +6,7 @@ import Quickshell.Wayland
 // Glyph picker (SUPER+grave, `chars` IPC): emoji, nerd font glyphs, unicode symbols, kaomoji, fancy text.
 // Type to fuzzy search; arrows / Ctrl+HJKL move, Tab section, Ctrl+Left/Right group, Enter copies, Shift+Enter types it
 // into the focused window, Ctrl+Enter collects into a buffer, Alt+Enter copies the codepoint.
-// Looks like glyph's charms (github.com/Nebelung-cloud/glyph-rice, GPL-3.0, charms/Charms.qml): a card over the dimmed
-// screen, search pill, section chips, tiles (the selected one white... here primary), the selection large at the bottom.
+// Looks: a card over the dimmed screen, search pill, section chips, tiles (the selected one white... here primary), the selection large at the bottom.
 PanelWindow {
     id: win
     property bool opened: false

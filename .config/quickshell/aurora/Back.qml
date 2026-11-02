@@ -7,7 +7,6 @@ import Quickshell.Hyprland
 // (WallView), and without one a dot grid with the breathing halftone orb. A window of its own: the home screen above it
 // redraws often (clock colon, rings, cava) while this full-screen shader only redraws for the wave or a look change.
 // aurora draws the wallpaper itself; hyprpaper isn't used any more (Wall.qml).
-// After glyph-rice (github.com/Nebelung-cloud/glyph-rice, GPL-3.0), home/Back.qml.
 PanelWindow {
     id: win
     required property var modelData

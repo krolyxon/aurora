@@ -1,7 +1,7 @@
 import QtQuick
 
 // Mini player (control panel): the cover as dots in a circle, title / artist, a dotted seek bar, prev · play · next.
-// Hidden while no MPRIS player exists. Ported from glyph-rice (github.com/Nebelung-cloud/glyph-rice, GPL-3.0), quick/Quick.qml.
+// Hidden while no MPRIS player exists. Parts from glyph-rice (GPL-3.0), quick/Quick.qml.
 Rectangle {
     id: card
     readonly property var player: Media.player

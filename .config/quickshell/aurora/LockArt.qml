@@ -32,7 +32,7 @@ Item {
         onLoadFailed: root.hasFace = false
     }
 
-    // the avatar as glyph's lock screen draws it; off-screen, only ever grabbed
+    // the avatar as the lock screen draws it; off-screen, only ever grabbed
     Item {
         id: face
         x: -width - 100
