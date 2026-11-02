@@ -1,4 +1,7 @@
-# Dotfiles
+<div align="center">
+  <img src="assets/logo.svg" width="320" alt="aurora">
+  <p>My Arch Linux + Hyprland desktop, in a Nothing OS style, themed live from the wallpaper.</p>
+</div>
 
 ![aurora desktop](assets/aurora-desktop.webp)
 
