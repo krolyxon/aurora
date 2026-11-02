@@ -5,13 +5,14 @@
 
 ![aurora desktop](assets/aurora-desktop.webp)
 
-My desktop: **Arch Linux + Hyprland** (Lua config) + **aurora**, a custom Quickshell shell (bar, panel,
-notifications, OSD, dock), themed live from the wallpaper with **matugen** and deployed with **GNU stow**.
+**Aurora** is my own desktop on **Arch Linux + Hyprland** (Lua config): a desktop shell written in Quickshell (bar,
+control panel, notifications, OSD, dock, runner, settings, ...) plus the configs around it, themed live from the
+wallpaper with **matugen** and deployed with **GNU stow**.
 
-## aurora
+## The shell
 One shell instead of waybar, dunst, wlogout, fuzzel and a pile of scripts, in a Nothing OS style (Doto dot-matrix type,
-pills, LED dots; after [glyph-rice](https://github.com/Nebelung-cloud/glyph-rice)) with Material You colours: everything
-below is themed from the current wallpaper, which aurora draws itself as mono dots, colour dots or the plain photo.
+pills, LED dots) with Material You colours: everything below is themed from the current wallpaper, which aurora draws
+itself as mono dots, colour dots or the plain photo.
 
 <table>
   <tr>
@@ -45,7 +46,7 @@ below is themed from the current wallpaper, which aurora draws itself as mono do
 </table>
 
 > [!WARNING]
-> **This is my personal setup, not a general purpose dotfiles framework.**
+> **This is my personal setup, not a general purpose desktop or dotfiles framework.**
 >
 > It's built around my hardware (Lenovo Legion, Intel + NVIDIA hybrid graphics, `linux-zen`), my monitors,
 > my keyboard and my habits. I'm not trying to make it work for everyone, and I won't be adding options
@@ -58,13 +59,13 @@ below is themed from the current wallpaper, which aurora draws itself as mono do
 
 ## Installing (fresh Arch only)
 ```bash
-git clone https://git.krolyxon.com/dotfiles ~/.dotfiles
-cd ~/.dotfiles
+git clone https://git.krolyxon.com/aurora ~/aurora
+cd ~/aurora
 ./install.sh           # interactive: pick packages per group
 ./install.sh --yes     # pre-select the default packages, no pickers
 ./install.sh --check   # only compare installed packages with the lists, changes nothing
 ```
-The repo has to live at `~/.dotfiles` (stow links into the parent directory).
+Clone it straight into your home directory (`~/aurora`): stow links into the parent directory.
 
 ## Packages
 The lists live in `packages/*.txt`: one package per line, `#` for comments, and a trailing `!` means
@@ -94,10 +95,9 @@ The lists live in `packages/*.txt`: one package per line, `#` for comments, and 
 | Font / icons | Doto, Space Grotesk, Space Mono (shell UI, vendored in `.local/share/fonts/glyph`), JetBrainsMono Nerd Font, Papirus-Dark |
 
 ## Credits
-- aurora's look follows Nothing OS via [glyph-rice](https://github.com/Nebelung-cloud/glyph-rice) by Nebelung-cloud
-  (GPL-3.0): the design language, the dot-matrix shaders (`.config/quickshell/aurora/shaders/`) and several components
-  are ported from it; ported files say so in their header. Nothing, Nothing OS and Glyph are trademarks of Nothing
-  Technology Ltd; this is a fan setup, not affiliated with Nothing.
+- The dot-matrix shaders and some components started out as ports from
+  [glyph-rice](https://github.com/Nebelung-cloud/glyph-rice) (GPL-3.0); those files say so in their header.
+- Nothing, Nothing OS and Glyph are trademarks of Nothing Technology Ltd; this is a fan project, not affiliated with Nothing.
 - Fonts in `.local/share/fonts/glyph/`: [Doto](https://github.com/oliverlalan/Doto),
   [Space Grotesk](https://github.com/floriankarsten/space-grotesk) and [Space Mono](https://github.com/googlefonts/spacemono),
   under the SIL Open Font License (`OFL.txt` next to them).

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# krolyxon's dotfiles installer
+# aurora installer (krolyxon's desktop)
 #
 # READ THIS FIRST:
 #   This sets up MY personal desktop (Arch + Hyprland + aurora), built around my own
@@ -225,7 +225,7 @@ Only run this on a FRESHLY INSTALLED, UNCONFIGURED Arch system.
 
 This script is provided AS IS, WITHOUT ANY WARRANTY. It will:
 • Install a lot of packages (including NVIDIA drivers if selected)
-• Move conflicting files in your \$HOME to ~/.dotfiles-backup/
+• Move conflicting files in your \$HOME to ~/.aurora-backup/
 • Change your login shell to zsh
 • Optionally write /etc/keyd and enable keyd
 • Enable the aurora-shell.service user unit
@@ -269,7 +269,7 @@ WARNING=$(gum style \
   --padding "1 2" \
   --bold \
   "⚠️  Files in your \$HOME that conflict with this repo will be MOVED to
-~/.dotfiles-backup/<date>/ and replaced with symlinks from this repo.")
+~/.aurora-backup/<date>/ and replaced with symlinks from this repo.")
 
 if confirm "$WARNING
 
@@ -286,13 +286,13 @@ Proceed with system configuration (stow, shell)?"; then
     else
         log WARN "These paths conflict and will be moved to a backup:"
         printf '  %s\n' "${conflicts[@]}"
-        if ! confirm "Move these files to ~/.dotfiles-backup/ ?"; then
+        if ! confirm "Move these files to ~/.aurora-backup/ ?"; then
             log WARN "Aborted."
             exit 1
         fi
 
         # Move conflicts (relative to $HOME) into the backup dir, keeping their paths
-        BACKUP_DIR="$HOME/.dotfiles-backup/$(date '+%Y%m%d-%H%M%S')"
+        BACKUP_DIR="$HOME/.aurora-backup/$(date '+%Y%m%d-%H%M%S')"
         for path in "${conflicts[@]}"; do
             [[ -n "$path" && "$path" != "/" ]] || continue
             mkdir -p "$BACKUP_DIR/$(dirname "$path")"
