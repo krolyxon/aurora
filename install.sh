@@ -228,7 +228,7 @@ This script is provided AS IS, WITHOUT ANY WARRANTY. It will:
 • Move conflicting files in your \$HOME to ~/.dotfiles-backup/
 • Change your login shell to zsh
 • Optionally write /etc/keyd and enable keyd
-• Enable the aurora.service user unit
+• Enable the aurora-shell.service user unit
 
 Proceed at your OWN RISK."
 )
@@ -379,15 +379,15 @@ fi
 #########################
 # User unit, stowed to ~/.config/systemd/user. Hyprland starts it at login,
 # enabling it also ties it to graphical-session.target. No --now: no session yet.
-if [[ -f "$HOME/.config/systemd/user/aurora.service" ]]; then
-    if confirm "Enable aurora.service (the desktop shell)?"; then
+if [[ -f "$HOME/.config/systemd/user/aurora-shell.service" ]]; then
+    if confirm "Enable aurora-shell.service (the desktop shell)?"; then
         systemctl --user daemon-reload
-        systemctl --user enable aurora.service \
-            && log SUCCESS "Successfully enabled aurora.service" \
-            || log ERROR "Couldn't enable aurora.service (run 'systemctl --user enable aurora' after logging in)"
+        systemctl --user enable aurora-shell.service \
+            && log SUCCESS "Successfully enabled aurora-shell.service" \
+            || log ERROR "Couldn't enable aurora-shell.service (run 'systemctl --user enable aurora-shell' after logging in)"
     fi
 else
-    log WARN "aurora.service is not stowed, skipping"
+    log WARN "aurora-shell.service is not stowed, skipping"
 fi
 
 

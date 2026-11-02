@@ -31,7 +31,7 @@ hl.bind(
 -----------------
 hl.bind(mainMod .. " + c",           hl.dsp.exec_cmd("qs -c aurora ipc call shell toggle"))
 hl.bind(mainMod .. " + b", hl.dsp.exec_cmd("qs -c aurora ipc call shell bar"))
-hl.bind(mainMod .. " + SHIFT + b", hl.dsp.exec_cmd("systemctl --user restart aurora"))
+hl.bind(mainMod .. " + SHIFT + b", hl.dsp.exec_cmd("systemctl --user restart aurora-shell"))
 
 hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(menu))
 -- bind = $mainMod SHIFT, P, pseudo, # dwindle
