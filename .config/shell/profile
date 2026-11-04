@@ -39,9 +39,12 @@ export ANDROID_HOME="$HOME/Android/Sdk/"
 export PATH=$PATH:$ANDROID_HOME/tools
 export PATH=$PATH:$ANDROID_HOME/platform-tools
 export _JAVA_AWT_WM_NONREPARENTING=1 # Fix for Java applications in dwm
+export _JAVA_OPTIONS=-Djava.util.prefs.userRoot="$XDG_CONFIG_HOME"/java
 export MOZ_USE_XINPUT2="1" # Mozilla smooth scrolling/touchpads.
 export NPM_CONFIG_USERCONFIG="$HOME/.config/npm/npmrc"
 export NODE_REPL_HISTORY="$XDG_DATA_HOME"/node_repl_history
+export CLAUDE_CONFIG_DIR="$XDG_CONFIG_HOME/claude"
+export GRADLE_USER_HOME="$XDG_DATA_HOME"/gradle
 
 # Adds `~/.local/bin` to $PATH
 export PATH="$PATH:${$(find ~/.local/bin -type d -printf %p:)%%:}"
