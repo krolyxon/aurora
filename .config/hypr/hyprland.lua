@@ -18,6 +18,9 @@ colors = ok and c or { primary = "rgba(80d5cbff)", surface = "rgba(0e1514ff)", s
 -- Autostart
 -- -----------------------------------------------------
 hl.on("hyprland.start", function()
+    -- tty1 autologs in, so hyprlock is the login screen: its password unlocks the GNOME keyring
+    -- (/etc/pam.d/login has pam_gnome_keyring, hyprlock includes it; system/etc/pam.d)
+    hl.exec_cmd("pidof hyprlock || hyprlock")
     -- GTK3 on Wayland reads its theme + icons from gsettings, not settings.ini (colours: gtk-3.0/gtk.css, matugen)
     hl.exec_cmd("gsettings set org.gnome.desktop.interface gtk-theme adw-gtk3-dark")
     hl.exec_cmd("gsettings set org.gnome.desktop.interface icon-theme Papirus-Dark")

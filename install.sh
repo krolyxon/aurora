@@ -228,6 +228,7 @@ This script is provided AS IS, WITHOUT ANY WARRANTY. It will:
 • Move conflicting files in your \$HOME to ~/.aurora-backup/
 • Change your login shell to zsh
 • Optionally write /etc/keyd and enable keyd
+• Optionally write /etc/pam.d/{login,passwd} (GNOME keyring unlock)
 • Enable the aurora-shell.service user unit
 
 Proceed at your OWN RISK."
@@ -371,6 +372,19 @@ if command -v keyd >/dev/null 2>&1; then
             && log SUCCESS "Successfully enabled keyd.service" \
             || log ERROR "Couldn't enable keyd.service"
     fi
+fi
+
+
+############################
+## GNOME keyring on login ##
+############################
+# pam_gnome_keyring unlocks the "login" keyring with the login password (tty login and hyprlock,
+# whose PAM file includes login); passwd keeps the keyring password in sync.
+if confirm "Unlock GNOME keyring at login (writes /etc/pam.d/login and passwd)?"; then
+    log INFO "Copying PAM files to /etc/pam.d"
+    sudo cp "$currentDir/system/etc/pam.d/login" "$currentDir/system/etc/pam.d/passwd" /etc/pam.d/ \
+        && log SUCCESS "GNOME keyring unlocks at login" \
+        || log ERROR "Couldn't write /etc/pam.d"
 fi
 
 
