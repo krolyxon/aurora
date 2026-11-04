@@ -65,7 +65,8 @@ cd ~/aurora
 ./install.sh --yes     # pre-select the default packages, no pickers
 ./install.sh --check   # only compare installed packages with the lists, changes nothing
 ```
-Clone it straight into your home directory (`~/aurora`): stow links into the parent directory.
+Clone it anywhere (e.g. `~/dev/aurora`): the repo's `.stowrc` points stow at `$HOME`. Re-stow by hand with `stow .`
+from the repo; to move an existing checkout, `stow -D .` first, move it, then `stow .` again.
 
 ## Packages
 The lists live in `packages/*.txt`: one package per line, `#` for comments, and a trailing `!` means

@@ -26,7 +26,7 @@ alias \
 
 alias on="tmux new-session -s notes -c ~/dox/brain 'nvim .'"
 alias todo="nvim ~/dox/brain/Todo.md"
-alias dots="cd ~/aurora/"
+alias dots='cd "$(dirname "$(readlink -f ~/.config/shell/aliasrc)")/../.."'   # wherever the repo lives
 alias cava="cava -p ~/.cache/matugen/cava"   # colours from matugen
 
 # Colorize commands when possible.

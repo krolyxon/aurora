@@ -279,7 +279,7 @@ Proceed with system configuration (stow, shell)?"; then
     ## Stow dotfiles ##
     ###################
     log INFO "Detecting conflicts..."
-    mapfile -t conflicts < <(stow . --no-folding -nv 2>&1 | \
+    mapfile -t conflicts < <(stow -t "$HOME" . --no-folding -nv 2>&1 | \
         sed -n 's/.*existing target \(.*\) since neither.*/\1/p')
 
     if ((${#conflicts[@]} == 0)); then
@@ -302,7 +302,7 @@ Proceed with system configuration (stow, shell)?"; then
         log INFO "Backups are in $BACKUP_DIR"
     fi
 
-    stow . --no-folding \
+    stow -t "$HOME" . --no-folding \
         && log SUCCESS "Dotfiles stowed successfully" \
         || log ERROR "Stow failed"
 
