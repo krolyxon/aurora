@@ -1,4 +1,3 @@
 {
-  "cursor:inactive_timeout": 6,
-  "general:resize_on_border": false
+  "cursor:inactive_timeout": 6
 }

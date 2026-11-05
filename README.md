@@ -92,7 +92,7 @@ The lists live in `packages/*.txt`: one package per line, `#` for comments, and 
 | Editor | Neovim (LazyVim) |
 | Launcher / menus | aurora's runner (`aurora-run`, also a dmenu replacement for scripts) |
 | Files | lf, pcmanfm |
-| Music / video | mpd + ncmpcpp, mpv |
+| Music / video | mpd + rmptui , mpv |
 | Font / icons | Doto, Space Grotesk, Space Mono (shell UI, vendored in `.local/share/fonts/glyph`), JetBrainsMono Nerd Font, Papirus-Dark |
 
 ## Credits
