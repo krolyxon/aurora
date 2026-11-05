@@ -1,94 +1,131 @@
 # Basic vars
-# set sixel true
 set shellopts '-eu'
 set ifs "\n"
 set scrolloff 10
 set icons
 set hidden true
 set drawbox true
-set period 1
+set roundbox true
+set watch true # files other programs add or remove (remage, downloads, waldl) show up without polling
 set previewer '~/.config/lf/scope'
+set preload true
 set autoquit true
 
 # cmds/functions
 cmd open ${{
-    case $(file --mime-type "$(readlink -f $f)" -b) in
-	application/vnd.openxmlformats-officedocument.spreadsheetml.sheet) localc $fx ;;
+    set -f
+    case $(file --mime-type "$(readlink -f "$f")" -b) in
 	image/vnd.djvu|application/pdf|application/postscript) setsid -f zathura $fx >/dev/null 2>&1 ;;
         text/*|application/json|inode/x-empty|application/x-subrip) $EDITOR $fx;;
-	image/x-xcf) setsid -f gimp $f >/dev/null 2>&1 ;;
-	image/svg+xml) display -- $f ;;
-	image/*) rotdir $f | grep -i "\.\(png\|jpg\|jpeg\|gif\|webp\|avif\|tif\|ico\|heic\)\(_large\)*$" |
-		setsid -f remage -io 2>/dev/null | while read -r file; do
-			[ -z "$file" ] && continue
-			lf -remote "send select \"$file\""
-			lf -remote "send toggle"
-		done &
-		;;
-	audio/*|video/x-ms-asf) mpv --audio-display=no $f ;;
-	video/*) setsid -f mpv $f -quiet >/dev/null 2>&1 ;;
-	application/pdf|application/vnd.djvu|application/epub*) setsid -f zathura $fx >/dev/null 2>&1 ;;
+	image/x-xcf) setsid -f gimp "$f" >/dev/null 2>&1 ;;
+	# one image = remage on its whole directory, starting there; a selection = just those.
+	# Images marked in remage (m) become the selection here.
+	image/*) setsid -f ~/.config/lf/remage-pick $fx >/dev/null 2>&1 ;;
+	audio/*|video/x-ms-asf) mpv --audio-display=no $fx ;;
+	video/*) setsid -f mpv $fx -quiet >/dev/null 2>&1 ;;
+	application/vnd.djvu|application/epub*) setsid -f zathura $fx >/dev/null 2>&1 ;;
 	application/pgp-encrypted) $EDITOR $fx ;;
 	application/vnd.openxmlformats-officedocument.wordprocessingml.document|application/vnd.oasis.opendocument.text|application/vnd.openxmlformats-officedocument.spreadsheetml.sheet|application/vnd.oasis.opendocument.spreadsheet|application/vnd.oasis.opendocument.spreadsheet-template|application/vnd.openxmlformats-officedocument.presentationml.presentation|application/vnd.oasis.opendocument.presentation-template|application/vnd.oasis.opendocument.presentation|application/vnd.ms-powerpoint|application/vnd.oasis.opendocument.graphics|application/vnd.oasis.opendocument.graphics-template|application/vnd.oasis.opendocument.formula|application/vnd.oasis.opendocument.database) setsid -f libreoffice $fx >/dev/null 2>&1 ;;
         application/octet-stream) case ${f##*.} in
 			doc|docx|xls|xlsx|odt|ppt|pptx) setsid -f libreoffice $fx >/dev/null 2>&1 ;;
-			ghw) setsid -f gtkwave $f >/dev/null 2>&1 ;;
-			ts) setsid -f mpv $f -quiet >/dev/null 2>&1 ;;
+			ghw) setsid -f gtkwave "$f" >/dev/null 2>&1 ;;
+			ts) setsid -f mpv $fx -quiet >/dev/null 2>&1 ;;
 			*) setsid -f zathura $fx >/dev/null 2>&1 ;;
 	   	esac ;;
-	*) for f in $fx; do setsid -f $OPENER $f >/dev/null 2>&1; done;;
+	*) for f in $fx; do setsid -f xdg-open "$f" >/dev/null 2>&1; done;;
     esac
 }}
-cmd mkdir $mkdir -p "$(echo $* | tr ' ' '\ ')"
+
+# pick any app registered for the file's type (gio mime) in aurora's runner
+cmd open-with ${{
+	set -f
+	app=$(gio mime "$(file -Lb --mime-type -- "$f")" | sed -n 's/^\t\(.*\)\.desktop$/\1/p' | sort -u |
+		aurora-run -d -p "open with:") || exit 0
+	setsid -f gtk-launch "$app" $fx >/dev/null 2>&1
+}}
+
+cmd mkdir %mkdir -p -- "$*"
+cmd touch %touch -- "$*"
 
 cmd extract ${{
 	clear; tput cup $(($(tput lines)/3)); tput bold
 	set -f
 	printf "%s\n\t" "$fx"
 	printf "extract?[y/N]"
-	read ans
-	[ $ans = "y" ] && ext $fx
+	read -r ans
+	[ "$ans" = "y" ] && ext $fx
+}}
+
+# D: to the trash (gio, restorable with U); <delete>: gone for good
+cmd trash %{{
+	set -f
+	gio trash -- $fx
+	lf -remote "send $id :unselect; echo trashed $(printf '%s\n' "$fx" | wc -l) item(s), U restores"
+}}
+
+cmd restore ${{
+	pick=$(gio trash --list | awk -F '\t' '{ print $2 "\t" $1 }' |
+		fzf --multi --delimiter '\t' --with-nth 1 --prompt "restore: ") || exit 0
+	printf '%s\n' "$pick" | cut -f2 | while read -r uri; do gio trash --restore "$uri"; done
 }}
 
 cmd delete ${{
 	clear; tput cup $(($(tput lines)/3)); tput bold
 	set -f
 	printf "%s\n\t" "$fx"
-	printf "delete?[y/N]"
-	read ans
-	[ $ans = "y" ] && rm -rf -- $fx
+	printf "delete permanently?[y/N]"
+	read -r ans
+	[ "$ans" = "y" ] && rm -rf -- $fx
 }}
 
-cmd moveto ${{
-	clear; tput cup $(($(tput lines)/3)); tput bold
+# M / C: move / copy the selection to a directory from ~/.config/lf/mvdirs
+cmd transfer ${{
 	set -f
-	clear; echo "Move to where?"
-	dest=$(cat ~/.config/lf/mvdirs | fzf )
-	for x in $fx; do
-		eval mv -iv \"$x\" \"$dest\"
-	done &&
-	notify-send "🚚 File(s) moved." "File(s) moved to $dest."
+	dest=$(sed "s|^\\\$HOME|$HOME|; s|^~|$HOME|" ~/.config/lf/mvdirs | fzf --prompt "$1 to: ") || exit 0
+	if [ "$1" = move ]; then mv -iv -- $fx "$dest"; else cp -ivr -- $fx "$dest"; fi
+	notify-send "lf" "$1: $(printf '%s\n' "$fx" | wc -l) item(s) to $dest"
 }}
 
-cmd setwall -p "$1"
+cmd fzf-jump ${{
+	res=$(fd --hidden --exclude .git | fzf --prompt "jump: ") || exit 0
+	lf -remote "send $id select \"$(printf '%s' "$res" | sed 's/[\\"]/\\&/g')\""
+}}
+
+# copy paths / names / the image itself
+cmd yank-path %printf '%s' "$fx" | wl-copy && lf -remote "send $id echo copied path"
+cmd yank-name %basename -a -- $fx | head -c -1 | wl-copy && lf -remote "send $id echo copied name"
+cmd yank-dir %printf '%s' "$PWD" | wl-copy && lf -remote "send $id echo copied $PWD"
+cmd yank-file %wl-copy --type "$(file -Lb --mime-type -- "$f")" < "$f" && lf -remote "send $id echo copied file contents"
+
+cmd setwall %setwall -p "$f"
+
+# window title = the directory (Hyprland, aurora's overview)
+cmd on-cd &{{
+	lf -remote "send $id tty-write \"\033]2;lf $(pwd | sed "s|^$HOME|~|")\007\""
+}}
+on-cd
 
 # Bindings
-map <c-f> $lf -remote "send $id select \"$(fzf)\""
-map D delete
+map <c-f> fzf-jump
+map D trash
+map <delete> delete
+map U restore
 map p paste
 map dd cut
-map M moveto
+map M transfer move
+map C transfer copy
 map yy copy
 map H top
 map E extract
 map <c-n> push :mkdir<space>
+map <c-t> push :touch<space>
 map <c-r> reload
 map <c-s> set hidden!
 map <enter> shell
 map x $$f
 map X !$f
-map o &mimeopen $f
-map O $mimeopen --ask $f
+map o &xdg-open "$f"
+map O open-with
 
 map A :rename; cmd-end # at the very end
 map c push A<c-u> # new rename
@@ -96,7 +133,7 @@ map I :rename; cmd-home # at the very beginning
 map i :rename # before extension
 map a :rename; cmd-right # after extension
 map br $vimv
-map bg $setwall -p $f
+map bg setwall
 
 map <c-e> down
 map <c-y> up
@@ -104,14 +141,19 @@ map V push :!nvim<space>
 
 map W $setsid -f $TERMINAL >/dev/null 2>&1
 
-map Y $printf "%s" "$fx" | xclip -selection clipboard
-map T $nsxiv -t "$(pwd)" # opens thumbnail mode
+map Y yank-path
+map yp yank-path
+map yn yank-name
+map yd yank-dir
+map yi yank-file
+map T &~/.config/lf/remage-pick -t . # thumbnail grid of this directory, marks -> selection
 map <c-l> unselect
 
 # movement
 map gd cd ~/dox/
 map gD cd ~/dl/
 map gp cd ~/pix
+map gw cd ~/pix/wallpapers
 map gc cd ~/.config
 map gC cd ~/.cache
 map gr cd ~/code/repos
@@ -121,4 +163,5 @@ map gM cd ~/media
 map gn cd ~/music
 map gb cd ~/.local/bin
 map gt cd /tmp
+map gT cd ~/.local/share/Trash/files
 map gs cd ~/.local/share

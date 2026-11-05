@@ -1,14 +1,49 @@
 #!/bin/sh
+# lf previewer: $1 file, $2 width, $3 height (cells). Exit 0 = lf may cache the output (set preload).
+
+cache="${XDG_CACHE_HOME:-$HOME/.cache}/lf"
+# thumbnail path for $1: changes when the file does
+thumb() {
+	mkdir -p "$cache"
+	printf '%s/thumb.%s' "$cache" "$(stat -L --printf '%n\0%i\0%s\0%Y' -- "$1" | sha256sum | cut -d' ' -f1)"
+}
+image() {
+	chafa -f sixel -s "${2}x${3}" --animate off --polite on -t 1 --bg black -- "$1"
+}
+
 case "$(file -Lb --mime-type -- "$1")" in
-  image/*)
-    chafa -f sixel -s "$2x$3" --animate off --polite on -t 1 --bg black "$1"
-    ;;
-  video/*)
-    CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/lf/thumb.$(stat --printf '%n\0%i\0%F\0%s\0%W\0%Y' -- "$(readlink -f "$1")" | sha256sum | cut -d' ' -f1)"
-	ffmpegthumbnailer -i "$1" -o "$CACHE" -s 0
-    chafa -f sixel -s "$2x$3" --animate off --polite on -t 1 --bg black "$CACHE"
-    ;;
-  text/*)
-    bat "$1"
-    ;;
+	image/svg+xml)
+		t=$(thumb "$1").png
+		[ -s "$t" ] || magick -background none -density 192 "$1" -resize 1024x1024 "$t"
+		image "$t" "$2" "$3"
+		;;
+	image/*)
+		image "$1" "$2" "$3"
+		;;
+	video/*)
+		t=$(thumb "$1").jpg
+		[ -s "$t" ] || ffmpegthumbnailer -i "$1" -o "$t" -s 1024 -q 6 >/dev/null 2>&1
+		image "$t" "$2" "$3"
+		;;
+	application/pdf)
+		t=$(thumb "$1")
+		[ -s "$t.jpg" ] || pdftoppm -jpeg -f 1 -l 1 -singlefile -scale-to 1024 -- "$1" "$t"
+		image "$t.jpg" "$2" "$3"
+		;;
+	audio/*)
+		ffprobe -v error -show_entries format=duration,bit_rate:format_tags -of default=nw=1 -- "$1" |
+			sed 's/^TAG://'
+		;;
+	application/zip|application/x-tar|application/gzip|application/x-7z-compressed|application/vnd.rar|\
+	application/x-rar|application/x-xz|application/x-bzip2|application/zstd|application/x-zstd|\
+	application/java-archive|application/x-iso9660-image|application/x-cpio|application/vnd.debian.binary-package)
+		bsdtar -tf "$1"
+		;;
+	text/*|application/json|application/*xml|application/javascript|application/x-subrip|application/x-ndjson|\
+	application/toml|application/x-wine-extension-ini|application/pgp-keys|inode/x-empty)
+		bat --color=always --style=numbers --paging=never --terminal-width "$2" -- "$1"
+		;;
+	*)
+		file -Lb -- "$1"
+		;;
 esac

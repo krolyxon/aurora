@@ -69,6 +69,7 @@ ffmpegthumbnailer
 imagemagick
 imlib2
 chafa
+poppler
 perl-image-exiftool
 tesseract
 zathura

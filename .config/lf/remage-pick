@@ -1,0 +1,14 @@
+#!/bin/sh
+# Run from lf (needs $id): remage ARGS..., then the images marked there (m) become lf's selection.
+# One file = remage opens its whole directory at that file; several = just those; -t DIR = the grid.
+
+marked=$(remage -o "$@" 2>/dev/null)
+[ -n "$marked" ] || exit 0
+
+files=""
+while IFS= read -r file; do
+	files="$files \"$(printf '%s' "$file" | sed 's/[\\"]/\\&/g')\""
+done <<EOF
+$marked
+EOF
+lf -remote "send $id :unselect; toggle$files"

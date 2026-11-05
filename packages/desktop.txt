@@ -41,7 +41,6 @@ wireplumber
 
 # Apps the configs/keybinds assume
 foot
-nsxiv
 xdg-utils
 curl
 udisks2

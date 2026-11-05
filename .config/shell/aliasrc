@@ -9,7 +9,6 @@ alias \
     ls='eza -x' \
     lsa='eza -la' \
     nb="newsboat" \
-    sxiv="nsxiv" \
     hst="history 1 -1 | cut -c 8- | sort | uniq | fzf | tr -d '\n' | wl-copy" \
 
 # Verbosity and settings that you pretty much just always are going to want.
