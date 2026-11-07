@@ -37,7 +37,7 @@ itself as mono dots, colour dots or the plain photo.
     <td><img src="assets/aurora-cal.webp" alt="calendar"><br>
       <sub><b>Calendar</b> · from the clock in the bar</sub></td>
     <td><img src="assets/aurora-settings.webp" alt="settings app"><br>
-      <sub><b>Settings</b> (<kbd>Super</kbd>+<kbd>I</kbd>) · network, sound, appearance, Hyprland, keybinds, display, power</sub></td>
+      <sub><b>Settings</b> (<kbd>Super</kbd>+<kbd>I</kbd>) · searchable (<kbd>Ctrl</kbd>+<kbd>F</kbd>); network, sound, look, Hyprland, keybinds, display, power</sub></td>
   </tr>
   <tr>
     <td colspan="2"><img src="assets/aurora-overview.webp" alt="overview"><br>
