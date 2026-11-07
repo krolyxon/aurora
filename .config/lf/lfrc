@@ -56,19 +56,7 @@ cmd extract ${{
 	[ "$ans" = "y" ] && ext $fx
 }}
 
-# D: to the trash (gio, restorable with U); <delete>: gone for good
-cmd trash %{{
-	set -f
-	gio trash -- $fx
-	lf -remote "send $id :unselect; echo trashed $(printf '%s\n' "$fx" | wc -l) item(s), U restores"
-}}
-
-cmd restore ${{
-	pick=$(gio trash --list | awk -F '\t' '{ print $2 "\t" $1 }' |
-		fzf --multi --delimiter '\t' --with-nth 1 --prompt "restore: ") || exit 0
-	printf '%s\n' "$pick" | cut -f2 | while read -r uri; do gio trash --restore "$uri"; done
-}}
-
+# D / <delete>: gone for good, after a y/N prompt (no trash: /tmp etc. have none)
 cmd delete ${{
 	clear; tput cup $(($(tput lines)/3)); tput bold
 	set -f
@@ -107,9 +95,8 @@ on-cd
 
 # Bindings
 map <c-f> fzf-jump
-map D trash
+map D delete
 map <delete> delete
-map U restore
 map p paste
 map dd cut
 map M transfer move
