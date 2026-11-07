@@ -7,12 +7,17 @@ import Quickshell.Hyprland
 // Window overview for one monitor: its 10 workspaces as scaled boxes with live window previews.
 // Click a window = focus, click a workspace = switch, drag a window onto another box = move.
 // Type to filter by title/class, Enter focuses the first match, Esc closes.
+// Opens like zooming out of the desktop: the scrim fades in, the filter drops in and the workspaces settle into
+// place in a short wave (all driven by `t`, reversed on close; instant with animations off).
 PanelWindow {
     id: win
     property bool opened: false
     signal closeRequested()
 
-    visible: opened
+    property real t: opened ? 1 : 0
+    Behavior on t { NumberAnimation { duration: Theme.t * 1.4; easing.type: Easing.BezierSpline; easing.bezierCurve: Theme.glide } }
+
+    visible: t > 0
     anchors { top: true; bottom: true; left: true; right: true }
     exclusionMode: ExclusionMode.Ignore
     color: "transparent"
@@ -74,6 +79,7 @@ PanelWindow {
     Rectangle {
         anchors.fill: parent
         color: Theme.scrim
+        opacity: win.t
         MouseArea { anchors.fill: parent; onClicked: win.closeRequested() }
     }
 
@@ -87,6 +93,8 @@ PanelWindow {
         RowLayout {
             Layout.alignment: Qt.AlignHCenter
             spacing: 8
+            opacity: win.t
+            transform: Translate { y: -20 * (1 - win.t) }
             Rectangle {
                 implicitWidth: 520
                 implicitHeight: 56
@@ -162,6 +170,10 @@ PanelWindow {
                     id: box
                     required property int index
                     readonly property int wsId: win.offset + index + 1
+                    // this box's share of the open animation: each starts a little after the one before
+                    readonly property real p: Math.max(0, Math.min(1, (win.t - index * 0.03) / 0.73))
+                    opacity: p
+                    scale: 1.08 - 0.08 * p
                     readonly property bool current: win.activeWs !== null && win.activeWs.id === wsId
                     readonly property real originX: (grid.width - (grid.boxW * grid.cols + grid.gap * (grid.cols - 1))) / 2
                     x: originX + (index % grid.cols) * (grid.boxW + grid.gap)
@@ -229,7 +241,7 @@ PanelWindow {
                                     id: shot
                                     anchors.fill: parent
                                     anchors.margins: 1
-                                    captureSource: win.opened && tile.modelData.wayland ? tile.modelData.wayland : null
+                                    captureSource: win.visible && tile.modelData.wayland ? tile.modelData.wayland : null
                                     live: true
                                 }
                                 Image {   // big centred icon until the preview arrives, then a corner badge
