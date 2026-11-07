@@ -4,34 +4,34 @@ import Quickshell
 import Quickshell.Io
 
 // The settings app's sections and its search index. Like Android indexes each preference XML, the rows are parsed out
-// of the page files themselves: SectionLabel (a group) and Switch / Knob / Choice / Field / Timeout with a literal
-// `label:`, plus their `hint:`, `keywords:` (synonyms, read only here) and a Choice's option labels. IconBtn only with
-// `keywords:` (opt-in). Non-literal labels aren't indexed. `extras` covers rows without a label (wi-fi, bluetooth power).
+// of the page files themselves: Group / SectionLabel (a group: its literal `title:` / `text:`) and Switch / Knob /
+// Choice / Field / Timeout with a literal `label:`, plus their `hint:`, `keywords:` (synonyms, read only here) and a
+// Choice's option labels. IconBtn only with `keywords:` (opt-in). Non-literal labels aren't indexed. `extras` covers rows without a label (wi-fi, bluetooth power).
 // Editing a page hot-reloads the shell, which re-parses it.
 Singleton {
     id: idx
 
     // files: parsed in this order (a page's composite rows like BatteryInfo / GpuSwitch count as the page)
     readonly property var sections: [
-        { id: "network",    word: "network",   caption: "network · wi-fi, wired, tethering", files: ["NetPage.qml"],
+        { id: "network",    icon: Theme.iWifi, word: "network",   caption: "network · wi-fi, wired, tethering", files: ["NetPage.qml"],
           keywords: "wifi internet ethernet" },
-        { id: "bluetooth",  word: "bluetooth", caption: "bluetooth · devices, pairing", files: ["BtPage.qml"], keywords: "bt" },
-        { id: "sound",      word: "sound",     caption: "sound · levels, devices, apps", files: ["AudioPage.qml"],
+        { id: "bluetooth",  icon: Theme.iBt, word: "bluetooth", caption: "bluetooth · devices, pairing", files: ["BtPage.qml"], keywords: "bt" },
+        { id: "sound",      icon: Theme.iVolHigh, word: "sound",     caption: "sound · levels, devices, apps", files: ["AudioPage.qml"],
           keywords: "audio volume speakers microphone" },
-        { id: "appearance", word: "look",      caption: "look · wallpaper, home screen, colours, bar", files: ["SetAppearance.qml"],
+        { id: "appearance", icon: Theme.iPalette, word: "look",      caption: "look · wallpaper, home screen, colours, bar", files: ["SetAppearance.qml"],
           keywords: "appearance theme style" },
-        { id: "shell",      word: "shell",     caption: "shell · home screen, dock, osd, notifications", files: ["SetShell.qml"],
+        { id: "shell",      icon: Theme.iDashboard, word: "shell",     caption: "shell · home screen, dock, osd, notifications", files: ["SetShell.qml"],
           keywords: "aurora" },
-        { id: "windows",    word: "windows",   caption: "windows · hyprland gaps, borders, effects, layout", files: ["SetWindows.qml"],
+        { id: "windows",    icon: Theme.iWindows, word: "windows",   caption: "windows · hyprland gaps, borders, effects, layout", files: ["SetWindows.qml"],
           keywords: "hyprland tiling" },
-        { id: "input",      word: "input",     caption: "input · keyboard, mouse, touchpad", files: ["SetInput.qml"], keywords: "" },
-        { id: "keybinds",   word: "keys",      caption: "keys · hyprland binds", files: [],
+        { id: "input",      icon: Theme.iMouse, word: "input",     caption: "input · keyboard, mouse, touchpad", files: ["SetInput.qml"], keywords: "" },
+        { id: "keybinds",   icon: Theme.iKeyboard, word: "keys",      caption: "keys · hyprland binds", files: [],
           keywords: "keybinds shortcuts hotkeys bindings" },
-        { id: "display",    word: "display",   caption: "display · monitors, layout, night light", files: ["SetDisplay.qml"],
+        { id: "display",    icon: Theme.iMonitor, word: "display",   caption: "display · monitors, layout, night light", files: ["SetDisplay.qml"],
           keywords: "screen monitor resolution" },
-        { id: "power",      word: "power",     caption: "power · battery, profiles, idle", files: ["BatteryInfo.qml", "SetPower.qml", "GpuSwitch.qml"],
+        { id: "power",      icon: Theme.iBolt, word: "power",     caption: "power · battery, profiles, idle", files: ["BatteryInfo.qml", "SetPower.qml", "GpuSwitch.qml"],
           keywords: "energy sleep" },
-        { id: "about",      word: "about",     caption: "about · this system", files: ["SetAbout.qml"], keywords: "info version" }
+        { id: "about",      icon: Theme.iArch, word: "about",     caption: "about · this system", files: ["SetAbout.qml"], keywords: "info version" }
     ]
 
     // rows the parser can't see. group = the SectionLabel to land on ("" = the top of the section)
@@ -113,11 +113,11 @@ Singleton {
         return { top: top, inner: inner }
     }
     function parse(file, t) {
-        var out = [], group = "", groupKw = "", re = /\b(SectionLabel|Switch|Knob|Choice|Field|Timeout|IconBtn)\s*\{/g, m
+        var out = [], group = "", groupKw = "", re = /\b(Group|SectionLabel|Switch|Knob|Choice|Field|Timeout|IconBtn)\s*\{/g, m
         while ((m = re.exec(t)) !== null) {
             var b = block(t, re.lastIndex), kw = lit(b.top, "keywords")
-            if (m[1] === "SectionLabel") {
-                group = lit(b.top, "text") || ""
+            if (m[1] === "Group" || m[1] === "SectionLabel") {
+                group = lit(b.top, m[1] === "Group" ? "title" : "text") || ""
                 groupKw = group !== "" ? kw || "" : ""
                 if (group !== "") out.push({ kind: "group", group: group, label: group, hint: "", keywords: groupKw, context: "" })
                 continue

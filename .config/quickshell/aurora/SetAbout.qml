@@ -43,90 +43,118 @@ Flickable {
     ColumnLayout {
         id: col
         width: flick.width
-        spacing: 8
+        spacing: 22
 
-        RowLayout {
-            spacing: 14
-            Text {
-                text: Theme.iArch
-                color: Theme.fill
-                font.family: Theme.ui
-                font.pixelSize: 56
-            }
-            ColumnLayout {
-                spacing: 2
+        // the machine at a glance, like Android's "about phone" header
+        Group {
+            RowLayout {
+                Layout.margins: 14
+                Layout.leftMargin: 22
+                spacing: 18
                 Text {
-                    text: flick.info.length ? flick.info[0][1] : ""
-                    color: Theme.fg
-                    font.family: Theme.ui
-                    font.pixelSize: 21
-                    font.bold: true
-                }
-                Text {
-                    text: Quickshell.env("USER") + "@" + (flick.info.length > 2 ? flick.info[2][1] : "")
-                        + "  ·  up " + Theme.fmtTime(SysStats.uptime)
-                    color: Theme.fgDim
-                    font.family: Theme.ui
-                    font.pixelSize: 15
-                }
-            }
-        }
-
-        SectionLabel { text: "system"; keywords: "kernel cpu gpu host hostname distro packages version uptime"; Layout.topMargin: 6 }
-        Repeater {
-            model: flick.info
-            delegate: RowLayout {
-                required property var modelData
-                Layout.fillWidth: true
-                spacing: 8
-                Text {
-                    Layout.preferredWidth: 150
-                    text: modelData[0]
+                    text: Theme.iArch
                     color: Theme.fill
                     font.family: Theme.ui
-                    font.pixelSize: 15
+                    font.pixelSize: 56
                 }
-                Text {
+                ColumnLayout {
+                    spacing: 2
+                    Text {
+                        text: flick.info.length ? flick.info[0][1] : ""
+                        color: Theme.fg
+                        font.family: Theme.ui
+                        font.pixelSize: 21
+                        font.bold: true
+                    }
+                    Text {
+                        text: Quickshell.env("USER") + "@" + (flick.info.length > 2 ? flick.info[2][1] : "")
+                            + "  ·  up " + Theme.fmtTime(SysStats.uptime)
+                        color: Theme.fgDim
+                        font.family: Theme.ui
+                        font.pixelSize: 15
+                    }
+                }
+            }
+        }
+
+        Group {
+            title: "system"
+            keywords: "kernel cpu gpu host hostname distro packages version uptime"
+            gap: 0
+            Repeater {
+                model: flick.info
+                delegate: RowLayout {
+                    required property var modelData
                     Layout.fillWidth: true
-                    Layout.leftMargin: 18
-                    text: modelData[1]
-                    color: Theme.fg
-                    elide: Text.ElideRight
-                    font.family: Theme.ui
-                    font.pixelSize: 15
+                    Layout.preferredHeight: 40
+                    spacing: 8
+                    Text {
+                        Layout.preferredWidth: 150
+                        Layout.leftMargin: 18
+                        text: modelData[0]
+                        color: Theme.fill
+                        font.family: Theme.ui
+                        font.pixelSize: 15
+                    }
+                    Text {
+                        Layout.fillWidth: true
+                        Layout.leftMargin: 18
+                        text: modelData[1]
+                        color: Theme.fg
+                        elide: Text.ElideRight
+                        font.family: Theme.ui
+                        font.pixelSize: 15
+                    }
                 }
             }
         }
 
-        SectionLabel { text: "memory & storage"; keywords: "ram disk space drives usage"; Layout.topMargin: 6 }
-        StatBar {
-            label: "memory"
-            frac: SysStats.memTotal > 0 ? SysStats.memUsed / SysStats.memTotal : 0
-            valueText: flick.size(SysStats.memUsed) + " / " + flick.size(SysStats.memTotal)
+        Group {
+            title: "memory & storage"
+            keywords: "ram disk space drives usage"
+            gap: 14
+            StatBar {
+                Layout.leftMargin: 18
+                Layout.rightMargin: 18
+                Layout.topMargin: 12
+                label: "memory"
+                frac: SysStats.memTotal > 0 ? SysStats.memUsed / SysStats.memTotal : 0
+                valueText: flick.size(SysStats.memUsed) + " / " + flick.size(SysStats.memTotal)
+            }
+            Repeater {
+                model: SysStats.disks
+                delegate: StatBar {
+                    required property var modelData
+                    Layout.leftMargin: 18
+                    Layout.rightMargin: 18
+                    label: modelData.label
+                    frac: modelData.used / modelData.size
+                    fill: frac > 0.9 ? Theme.err : Theme.fill
+                    valueText: flick.size(modelData.used) + " / " + flick.size(modelData.size)
+                }
+            }
+            Item { Layout.preferredHeight: 2 }
         }
-        Repeater {
-            model: SysStats.disks
-            delegate: StatBar {
-                required property var modelData
-                label: modelData.label
-                frac: modelData.used / modelData.size
-                fill: frac > 0.9 ? Theme.err : Theme.fill
-                valueText: flick.size(modelData.used) + " / " + flick.size(modelData.size)
+
+        Group {
+            title: "credits"
+            keywords: "license glyph-rice fonts"
+            Text {
+                Layout.fillWidth: true
+                Layout.leftMargin: 18
+                Layout.rightMargin: 18
+                Layout.topMargin: 10
+                Layout.bottomMargin: 10
+                wrapMode: Text.WordWrap
+                lineHeight: 1.3
+                color: Theme.fgDim
+                font.family: Theme.ui
+                font.pixelSize: 14
+                text: "The dot-matrix shaders and some components started as ports from glyph-rice by Nebelung-cloud "
+                    + "(GPL-3.0). Fonts: Doto, Space Grotesk, Space Mono (SIL OFL). Colours: matugen (Material You). Nothing, Nothing OS and Glyph are trademarks of Nothing Technology Ltd; "
+                    + "this is a fan project, not affiliated with Nothing."
             }
         }
 
-        SectionLabel { text: "credits"; keywords: "license glyph-rice fonts"; Layout.topMargin: 6 }
-        Text {
-            Layout.fillWidth: true
-            Layout.leftMargin: 18
-            wrapMode: Text.WordWrap
-            lineHeight: 1.3
-            color: Theme.fgDim
-            font.family: Theme.ui
-            font.pixelSize: 14
-            text: "The dot-matrix shaders and some components started as ports from glyph-rice by Nebelung-cloud "
-                + "(GPL-3.0). Fonts: Doto, Space Grotesk, Space Mono (SIL OFL). Colours: matugen (Material You). Nothing, Nothing OS and Glyph are trademarks of Nothing Technology Ltd; "
-                + "this is a fan project, not affiliated with Nothing."
-        }
     }
 }

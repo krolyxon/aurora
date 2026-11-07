@@ -7,7 +7,8 @@ import Quickshell.Bluetooth
 ColumnLayout {
     id: page
     property bool active: false
-    spacing: 10
+    property bool cards: false          // the settings app: groups on cards
+    spacing: cards ? 22 : 10
 
     readonly property var adapter: Bluetooth.defaultAdapter
 
@@ -53,96 +54,111 @@ ColumnLayout {
     }
     readonly property var devices: list()
 
-    RowLayout {
-        Layout.fillWidth: true
-        Layout.leftMargin: 6
-        spacing: 8
-        Lb {
+    // the radio: a card of its own in the settings app
+    Group {
+        flat: !page.cards
+        RowLayout {
             Layout.fillWidth: true
-            elide: Text.ElideRight
-            text: !page.adapter ? "no bluetooth adapter"
-                  : (!page.adapter.enabled ? "bluetooth · off"
-                  : (page.adapter.discovering ? "bluetooth · searching" : "bluetooth · " + (page.adapter.name || "on")))
-            color: page.adapter && page.adapter.enabled ? Theme.fg : Theme.grey
-        }
-        IconBtn {
-            visible: page.adapter !== null
-            icon: Theme.iSearch
-            active: page.adapter ? page.adapter.discovering : false
-            onClicked: if (page.adapter && page.adapter.enabled) page.adapter.discovering = !page.adapter.discovering
-        }
-        IconBtn {
-            visible: page.adapter !== null
-            icon: page.adapter && page.adapter.enabled ? Theme.iBt : Theme.iBtOff
-            active: page.adapter ? page.adapter.enabled : false
-            onClicked: {
-                if (!page.adapter) return
-                page.adapter.enabled = !page.adapter.enabled
-                if (page.adapter.enabled && page.active) page.adapter.discovering = true
+            Layout.leftMargin: page.cards ? 18 : 6
+            Layout.preferredHeight: page.cards ? 56 : -1
+            spacing: 8
+            Lb {
+                Layout.fillWidth: true
+                elide: Text.ElideRight
+                text: !page.adapter ? "no bluetooth adapter"
+                      : (!page.adapter.enabled ? "bluetooth · off"
+                      : (page.adapter.discovering ? "bluetooth · searching" : "bluetooth · " + (page.adapter.name || "on")))
+                color: page.adapter && page.adapter.enabled ? Theme.fg : Theme.grey
+            }
+            IconBtn {
+                visible: page.adapter !== null
+                icon: Theme.iSearch
+                active: page.adapter ? page.adapter.discovering : false
+                onClicked: if (page.adapter && page.adapter.enabled) page.adapter.discovering = !page.adapter.discovering
+            }
+            IconBtn {
+                visible: page.adapter !== null
+                icon: page.adapter && page.adapter.enabled ? Theme.iBt : Theme.iBtOff
+                active: page.adapter ? page.adapter.enabled : false
+                onClicked: {
+                    if (!page.adapter) return
+                    page.adapter.enabled = !page.adapter.enabled
+                    if (page.adapter.enabled && page.active) page.adapter.discovering = true
+                }
             }
         }
     }
 
-    SectionLabel { text: "devices"; keywords: "pair pairing connect forget headphones headset earbuds speaker controller"; count: page.adapter && page.adapter.enabled ? String(page.devices.length) : "" }
-
-    Flickable {
-        id: flick
-        Layout.fillWidth: true
+    Group {
+        title: "devices"
+        keywords: "pair pairing connect forget headphones headset earbuds speaker controller"
+        count: page.adapter && page.adapter.enabled ? String(page.devices.length) : ""
+        flat: !page.cards
+        spacing: 10
         Layout.fillHeight: true
-        Layout.preferredHeight: col.implicitHeight
-        clip: true
-        contentWidth: width
-        contentHeight: col.implicitHeight
-        boundsBehavior: Flickable.StopAtBounds
+        // on a card: only as tall as the list, it scrolls inside once the page is full
+        Layout.maximumHeight: page.cards ? implicitHeight : Infinity
 
-        ColumnLayout {
-            id: col
-            width: flick.width
-            spacing: 2
+        Flickable {
+            id: flick
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.preferredHeight: col.implicitHeight
+            clip: true
+            contentWidth: width
+            contentHeight: col.implicitHeight
+            boundsBehavior: Flickable.StopAtBounds
 
-            Repeater {
-                model: page.adapter && page.adapter.enabled ? page.devices : []
-                delegate: ListRow {
-                    id: row
-                    required property var modelData
-                    readonly property var dev: modelData
-                    property bool pendingConnect: false
+            ColumnLayout {
+                id: col
+                width: flick.width
+                spacing: 2
 
-                    function afterPair() {
-                        if (pendingConnect && page.paired(dev)) { pendingConnect = false; dev.connect() }
-                    }
+                Repeater {
+                    model: page.adapter && page.adapter.enabled ? page.devices : []
+                    delegate: ListRow {
+                        id: row
+                        required property var modelData
+                        readonly property var dev: modelData
+                        property bool pendingConnect: false
 
-                    icon: page.devIcon(dev)
-                    title: dev.name || dev.address
-                    current: dev.connected
-                    subtitle: {
-                        if (dev.state === BluetoothDeviceState.Connecting) return "connecting…"
-                        if (dev.pairing) return "pairing…"
-                        if (dev.connected)
-                            return "connected" + (dev.batteryAvailable ? " · " + Math.round(dev.battery * 100) + "%" : "")
-                        return page.paired(dev) ? "paired" : "available"
-                    }
-                    onClicked: {
-                        if (dev.connected) dev.disconnect()
-                        else if (page.paired(dev)) dev.connect()
-                        else { pendingConnect = true; dev.trusted = true; dev.pair() }
-                    }
+                        function afterPair() {
+                            if (pendingConnect && page.paired(dev)) { pendingConnect = false; dev.connect() }
+                        }
 
-                    // property name differs between Quickshell versions
-                    Connections {
-                        target: row.dev
-                        ignoreUnknownSignals: true
-                        function onBondedChanged() { row.afterPair() }
-                        function onPairedChanged() { row.afterPair() }
-                    }
-                    IconBtn {
-                        visible: page.paired(row.dev)
-                        icon: Theme.iTrash
-                        implicitHeight: 32
-                        onClicked: row.dev.forget()
+                        icon: page.devIcon(dev)
+                        title: dev.name || dev.address
+                        current: dev.connected
+                        subtitle: {
+                            if (dev.state === BluetoothDeviceState.Connecting) return "connecting…"
+                            if (dev.pairing) return "pairing…"
+                            if (dev.connected)
+                                return "connected" + (dev.batteryAvailable ? " · " + Math.round(dev.battery * 100) + "%" : "")
+                            return page.paired(dev) ? "paired" : "available"
+                        }
+                        onClicked: {
+                            if (dev.connected) dev.disconnect()
+                            else if (page.paired(dev)) dev.connect()
+                            else { pendingConnect = true; dev.trusted = true; dev.pair() }
+                        }
+
+                        // property name differs between Quickshell versions
+                        Connections {
+                            target: row.dev
+                            ignoreUnknownSignals: true
+                            function onBondedChanged() { row.afterPair() }
+                            function onPairedChanged() { row.afterPair() }
+                        }
+                        IconBtn {
+                            visible: page.paired(row.dev)
+                            icon: Theme.iTrash
+                            implicitHeight: 32
+                            onClicked: row.dev.forget()
+                        }
                     }
                 }
             }
         }
     }
+    Item { visible: page.cards; Layout.fillHeight: true }
 }

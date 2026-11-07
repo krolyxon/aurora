@@ -7,7 +7,7 @@ import Quickshell.Io
 // (`hyprctl binds` only shows "__lua <n>" for Lua binds). Comments above binds become the groups.
 ColumnLayout {
     id: page
-    spacing: 8
+    spacing: 16
     readonly property string file: Quickshell.env("HOME") + "/.config/hypr/source/keybinds.lua"
     property var binds: []            // [{group, keys, action}]
     property string query: ""
@@ -99,49 +99,71 @@ ColumnLayout {
         Layout.fillWidth: true
         Layout.fillHeight: true
         clip: true
-        spacing: 2
+        spacing: 0
         model: page.shown
         boundsBehavior: Flickable.StopAtBounds
-        delegate: RowLayout {
+        // a group header, or a bind on its group's card: s1 rows whose outer corners round where the group starts / ends
+        delegate: Item {
+            id: d
             required property var modelData
+            required property int index
             readonly property bool isHeader: modelData.header !== undefined
+            readonly property bool first: index === 0 || page.shown[index - 1].header !== undefined
+            readonly property bool last: index === page.shown.length - 1 || page.shown[index + 1].header !== undefined
             width: ListView.view.width
-            spacing: 10
+            height: isHeader ? (index === 0 ? 0 : 22) + 30 : 44 + (first ? 8 : 0) + (last ? 8 : 0)
             SectionLabel {
-                visible: parent.isHeader
-                Layout.topMargin: 6
-                text: parent.isHeader ? parent.modelData.header : ""
+                visible: d.isHeader
+                anchors.left: parent.left
+                anchors.leftMargin: 14
+                anchors.right: parent.right
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 10
+                text: d.isHeader ? d.modelData.header : ""
             }
             Rectangle {
-                visible: !parent.isHeader
-                Layout.preferredWidth: 240
-                Layout.leftMargin: 18
-                implicitHeight: 30
-                radius: 15
-                color: Theme.s2
-                Lb {
-                    anchors.fill: parent
-                    anchors.leftMargin: 14
-                    anchors.rightMargin: 10
-                    verticalAlignment: Text.AlignVCenter
-                    text: modelData.keys || ""
-                    color: Theme.fill
-                    elide: Text.ElideRight
-                    px: 10
+                visible: !d.isHeader
+                anchors.fill: parent
+                color: Theme.s1
+                topLeftRadius: d.first ? 36 : 0
+                topRightRadius: d.first ? 36 : 0
+                bottomLeftRadius: d.last ? 36 : 0
+                bottomRightRadius: d.last ? 36 : 0
+                RowLayout {
+                    x: 26
+                    y: (d.first ? 8 : 0) + (44 - height) / 2
+                    width: parent.width - 52
+                    spacing: 10
+                    Rectangle {
+                        Layout.preferredWidth: 240
+                        implicitHeight: 30
+                        radius: 15
+                        color: Theme.s2
+                        Lb {
+                            anchors.fill: parent
+                            anchors.leftMargin: 14
+                            anchors.rightMargin: 10
+                            verticalAlignment: Text.AlignVCenter
+                            text: d.modelData.keys || ""
+                            color: Theme.fill
+                            elide: Text.ElideRight
+                            px: 10
+                        }
+                    }
+                    Text {
+                        Layout.fillWidth: true
+                        text: d.modelData.action || ""
+                        color: Theme.fg
+                        elide: Text.ElideRight
+                        font.family: Theme.ui
+                        font.pixelSize: 14
+                    }
                 }
-            }
-            Text {
-                visible: !parent.isHeader
-                Layout.fillWidth: true
-                text: modelData.action || ""
-                color: Theme.fg
-                elide: Text.ElideRight
-                font.family: Theme.ui
-                font.pixelSize: 14
             }
         }
     }
     Text {
+        Layout.leftMargin: 18
         text: page.binds.length + " binds  ·  " + page.file.replace(Quickshell.env("HOME"), "~")
         color: Theme.fgDim
         font.family: Theme.ui

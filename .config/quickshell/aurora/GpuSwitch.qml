@@ -1,9 +1,10 @@
 import QtQuick
 import QtQuick.Layouts
 
-// envycontrol mode pills with the two-click arm (SysPage, settings app > Power)
-ColumnLayout {
+// envycontrol mode pills with the two-click arm (SysPage, settings app > Power). cards: on a card (the settings app).
+Group {
     id: root
+    property bool cards: false
     // two-click arm before switching (needs a reboot to apply)
     property string armedGpu: ""
     Timer { id: disarm; interval: 3000; onTriggered: root.armedGpu = "" }
@@ -14,9 +15,11 @@ ColumnLayout {
         Gpu.set(m)
     }
     visible: Gpu.mode !== ""
-    Layout.fillWidth: true
+    title: "graphics · envycontrol"
+    keywords: "gpu graphics mode nvidia hybrid integrated dgpu prime"
+    flat: !cards
     spacing: 10
-    SectionLabel { text: "graphics · envycontrol"; keywords: "gpu graphics mode nvidia hybrid integrated dgpu prime" }
+    gap: 10
     RowLayout {
         Layout.fillWidth: true
         spacing: 6
@@ -37,7 +40,8 @@ ColumnLayout {
     Lb {
         visible: Gpu.pending !== "" || Gpu.message !== "" || Gpu.busy
         Layout.fillWidth: true
-        Layout.leftMargin: 6
+        Layout.leftMargin: root.cards ? 18 : 6
+        Layout.bottomMargin: root.cards ? 8 : 0
         wrapMode: Text.Wrap
         px: 10
         color: Gpu.message !== "" ? Theme.err : Theme.live

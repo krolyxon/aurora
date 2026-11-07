@@ -184,6 +184,7 @@ Singleton {
     readonly property string iCast: cp(0xF0118)
     readonly property string iCrop: cp(0xF019E)
     readonly property string iWindow: cp(0xF05B0)
+    readonly property string iWindows: cp(0xF05B2)      // window-restore (settings > windows)
     readonly property string iMonitor: cp(0xF0379)
     readonly property string iSave: cp(0xF0193)
     readonly property string iClipboard: cp(0xF0147)

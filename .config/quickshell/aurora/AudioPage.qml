@@ -5,6 +5,7 @@ import Quickshell.Services.Pipewire
 // Control panel > sound (also the settings app's sound section): output / input levels, devices, per-app volume.
 Flickable {
     id: flick
+    property bool cards: false          // the settings app: groups on cards
     clip: true
     contentWidth: width
     contentHeight: col.implicitHeight
@@ -42,86 +43,113 @@ Flickable {
     ColumnLayout {
         id: col
         width: flick.width
-        spacing: 6
+        spacing: flick.cards ? 22 : 6
 
-        SectionLabel { text: "levels"; keywords: "volume mute microphone mic" }
-        SliderRow {
-            Layout.fillWidth: true
-            Layout.topMargin: 4
-            icon: Theme.volIcon(flick.out ? flick.out.volume : 0, flick.out ? flick.out.muted : true)
-            value: flick.out ? flick.out.volume : 0
-            muted: flick.out ? flick.out.muted : false
-            onMoved: v => { if (flick.out) flick.out.volume = v }
-            onIconClicked: if (flick.out) flick.out.muted = !flick.out.muted
-        }
-        SliderRow {
-            Layout.fillWidth: true
-            Layout.topMargin: 6
-            icon: flick.inp && !flick.inp.muted ? Theme.iMic : Theme.iMicOff
-            value: flick.inp ? flick.inp.volume : 0
-            muted: flick.inp ? flick.inp.muted : false
-            onMoved: v => { if (flick.inp) flick.inp.volume = v }
-            onIconClicked: if (flick.inp) flick.inp.muted = !flick.inp.muted
-        }
-
-        SectionLabel { text: "output"; keywords: "speakers headphones hdmi default device sink"; count: String(flick.sinks.length); Layout.topMargin: 14 }
-        Repeater {
-            model: flick.sinks
-            delegate: ListRow {
-                required property var modelData
-                icon: flick.sinkIcon(modelData)
-                title: flick.label(modelData)
-                subtitle: current ? "default" : ""
-                current: Pipewire.defaultAudioSink === modelData
-                trailing: modelData.audio ? Math.round(modelData.audio.volume * 100) + "%" : ""
-                onClicked: Pipewire.preferredDefaultAudioSink = modelData
-            }
-        }
-
-        SectionLabel { text: "input"; keywords: "microphone mic default device source"; count: String(flick.sources.length); Layout.topMargin: 14 }
-        Repeater {
-            model: flick.sources
-            delegate: ListRow {
-                required property var modelData
-                icon: Theme.iMic
-                title: flick.label(modelData)
-                subtitle: current ? "default" : ""
-                current: Pipewire.defaultAudioSource === modelData
-                trailing: modelData.audio ? Math.round(modelData.audio.volume * 100) + "%" : ""
-                onClicked: Pipewire.preferredDefaultAudioSource = modelData
-            }
-        }
-
-        SectionLabel { text: "apps"; keywords: "mixer per-app app volume streams"; count: String(flick.streams.length); Layout.topMargin: 14 }
-        Lb {
-            visible: flick.streams.length === 0
-            Layout.leftMargin: 6
-            text: "no app is playing"
-            color: Theme.mute
-        }
-        Repeater {
-            model: flick.streams
-            delegate: ColumnLayout {
-                required property var modelData
+        Group {
+            title: "levels"
+            keywords: "volume mute microphone mic"
+            flat: !flick.cards
+            spacing: 6
+            gap: 6
+            SliderRow {
                 Layout.fillWidth: true
                 Layout.topMargin: 4
-                spacing: 6
-                Lb {
-                    Layout.leftMargin: 6
-                    Layout.fillWidth: true
-                    elide: Text.ElideRight
-                    px: 10
-                    text: (modelData.properties && modelData.properties["application.name"])
-                          ? modelData.properties["application.name"] : flick.label(modelData)
+                icon: Theme.volIcon(flick.out ? flick.out.volume : 0, flick.out ? flick.out.muted : true)
+                value: flick.out ? flick.out.volume : 0
+                muted: flick.out ? flick.out.muted : false
+                onMoved: v => { if (flick.out) flick.out.volume = v }
+                onIconClicked: if (flick.out) flick.out.muted = !flick.out.muted
+            }
+            SliderRow {
+                Layout.fillWidth: true
+                Layout.topMargin: 6
+                icon: flick.inp && !flick.inp.muted ? Theme.iMic : Theme.iMicOff
+                value: flick.inp ? flick.inp.volume : 0
+                muted: flick.inp ? flick.inp.muted : false
+                onMoved: v => { if (flick.inp) flick.inp.volume = v }
+                onIconClicked: if (flick.inp) flick.inp.muted = !flick.inp.muted
+            }
+        }
+        Group {
+            title: "output"
+            keywords: "speakers headphones hdmi default device sink"
+            count: String(flick.sinks.length)
+            flat: !flick.cards
+            spacing: 6
+            gap: 6
+            Layout.topMargin: flick.cards ? 0 : 14
+            Repeater {
+                model: flick.sinks
+                delegate: ListRow {
+                    required property var modelData
+                    icon: flick.sinkIcon(modelData)
+                    title: flick.label(modelData)
+                    subtitle: current ? "default" : ""
+                    current: Pipewire.defaultAudioSink === modelData
+                    trailing: modelData.audio ? Math.round(modelData.audio.volume * 100) + "%" : ""
+                    onClicked: Pipewire.preferredDefaultAudioSink = modelData
                 }
-                SliderRow {
+            }
+        }
+        Group {
+            title: "input"
+            keywords: "microphone mic default device source"
+            count: String(flick.sources.length)
+            flat: !flick.cards
+            spacing: 6
+            gap: 6
+            Layout.topMargin: flick.cards ? 0 : 14
+            Repeater {
+                model: flick.sources
+                delegate: ListRow {
+                    required property var modelData
+                    icon: Theme.iMic
+                    title: flick.label(modelData)
+                    subtitle: current ? "default" : ""
+                    current: Pipewire.defaultAudioSource === modelData
+                    trailing: modelData.audio ? Math.round(modelData.audio.volume * 100) + "%" : ""
+                    onClicked: Pipewire.preferredDefaultAudioSource = modelData
+                }
+            }
+        }
+        Group {
+            title: "apps"
+            keywords: "mixer per-app app volume streams"
+            count: String(flick.streams.length)
+            flat: !flick.cards
+            spacing: 6
+            gap: 6
+            Layout.topMargin: flick.cards ? 0 : 14
+            Lb {
+                visible: flick.streams.length === 0
+                Layout.leftMargin: 6
+                text: "no app is playing"
+                color: Theme.mute
+            }
+            Repeater {
+                model: flick.streams
+                delegate: ColumnLayout {
+                    required property var modelData
                     Layout.fillWidth: true
-                    implicitHeight: 44
-                    icon: Theme.volIcon(modelData.audio.volume, modelData.audio.muted)
-                    value: modelData.audio.volume
-                    muted: modelData.audio.muted
-                    onMoved: v => modelData.audio.volume = v
-                    onIconClicked: modelData.audio.muted = !modelData.audio.muted
+                    Layout.topMargin: 4
+                    spacing: 6
+                    Lb {
+                        Layout.leftMargin: 6
+                        Layout.fillWidth: true
+                        elide: Text.ElideRight
+                        px: 10
+                        text: (modelData.properties && modelData.properties["application.name"])
+                              ? modelData.properties["application.name"] : flick.label(modelData)
+                    }
+                    SliderRow {
+                        Layout.fillWidth: true
+                        implicitHeight: 44
+                        icon: Theme.volIcon(modelData.audio.volume, modelData.audio.muted)
+                        value: modelData.audio.volume
+                        muted: modelData.audio.muted
+                        onMoved: v => modelData.audio.volume = v
+                        onIconClicked: modelData.audio.muted = !modelData.audio.muted
+                    }
                 }
             }
         }

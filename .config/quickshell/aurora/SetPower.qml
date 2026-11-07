@@ -65,95 +65,110 @@ Flickable {
     ColumnLayout {
         id: col
         width: flick.width
-        spacing: 8
+        spacing: 22
 
-        BatteryInfo {}
+        BatteryInfo { cards: true }
 
-        SectionLabel { text: "battery care"; keywords: "battery health"; Layout.topMargin: 6; visible: Battery.hasBat }
-        Choice {
-            visible: Battery.supported
-            label: "charge limit"
-            keywords: "conservation 80% battery health longevity"
-            options: [{ value: "off", label: "off" }, { value: "conservation", label: "conservation" }]
-            value: Settings.chargeMode === "off" ? "off" : "conservation"
-            onPicked: v => Settings.chargeMode = v
-        }
-        Text {
-            visible: Battery.supported
-            Layout.fillWidth: true
-            wrapMode: Text.WordWrap
-            text: Settings.chargeMode !== "off"
-                  ? "the firmware stops charging at ~80%, even when aurora isn't running. Conservation mode is "
-                    + (Battery.capOn ? "on" : "off") + "."
-                  : "charges to 100%"
-            color: Theme.fgDim
-            font.family: Theme.ui
-            font.pixelSize: 13
-        }
-        Knob {
+        Group {
+            title: "battery care"
+            keywords: "battery health"
             visible: Battery.hasBat
-            label: "warn at"
-            keywords: "low battery warning"
-            from: 5; to: 40; unit: "%"
-            value: Settings.batLow
-            onMoved: v => Settings.batLow = v
-        }
-        Knob {
-            visible: Battery.hasBat
-            label: "critical at"
-            keywords: "critical battery"
-            from: 2; to: 15; unit: "%"
-            value: Settings.batCritical
-            onMoved: v => Settings.batCritical = v
-        }
-        Choice {
-            visible: Battery.hasBat
-            label: "when critical"
-            keywords: "low battery action"
-            options: [{ value: "none", label: "warn" }, { value: "suspend", label: "suspend" },
-                      { value: "poweroff", label: "power off" }]
-            value: Settings.batCriticalAction
-            onPicked: v => Settings.batCriticalAction = v
+            Choice {
+                visible: Battery.supported
+                label: "charge limit"
+                keywords: "conservation 80% battery health longevity"
+                options: [{ value: "off", label: "off" }, { value: "conservation", label: "conservation" }]
+                value: Settings.chargeMode === "off" ? "off" : "conservation"
+                onPicked: v => Settings.chargeMode = v
+            }
+            Text {
+                visible: Battery.supported
+                Layout.fillWidth: true
+                Layout.leftMargin: 18
+                Layout.rightMargin: 18
+                Layout.bottomMargin: 6
+                wrapMode: Text.WordWrap
+                text: Settings.chargeMode !== "off"
+                      ? "the firmware stops charging at ~80%, even when aurora isn't running. Conservation mode is "
+                        + (Battery.capOn ? "on" : "off") + "."
+                      : "charges to 100%"
+                color: Theme.fgDim
+                font.family: Theme.ui
+                font.pixelSize: 13
+            }
+            Knob {
+                visible: Battery.hasBat
+                label: "warn at"
+                keywords: "low battery warning"
+                from: 5; to: 40; unit: "%"
+                value: Settings.batLow
+                onMoved: v => Settings.batLow = v
+            }
+            Knob {
+                visible: Battery.hasBat
+                label: "critical at"
+                keywords: "critical battery"
+                from: 2; to: 15; unit: "%"
+                value: Settings.batCritical
+                onMoved: v => Settings.batCritical = v
+            }
+            Choice {
+                visible: Battery.hasBat
+                label: "when critical"
+                keywords: "low battery action"
+                options: [{ value: "none", label: "warn" }, { value: "suspend", label: "suspend" },
+                          { value: "poweroff", label: "power off" }]
+                value: Settings.batCriticalAction
+                onPicked: v => Settings.batCriticalAction = v
+            }
         }
 
-        Choice {
-            Layout.topMargin: 6
-            visible: Battery.hasProfiles
-            label: "power profile"
+        Group {
+            title: "power profile"
             keywords: "performance balanced saver power-profiles-daemon"
-            options: flick.profiles.concat(Battery.hasBat ? [{ value: "auto", label: "auto" }] : [])
-            value: Battery.profile
-            onPicked: v => Battery.setProfile(v)
+            visible: Battery.hasProfiles
+            Choice {
+                visible: Battery.hasProfiles
+                label: "power profile"
+                keywords: "performance balanced saver power-profiles-daemon"
+                options: flick.profiles.concat(Battery.hasBat ? [{ value: "auto", label: "auto" }] : [])
+                value: Battery.profile
+                onPicked: v => Battery.setProfile(v)
+            }
+            Choice {
+                visible: Battery.hasProfiles && Settings.powerAuto
+                label: "on AC"
+                keywords: "plugged in charger power profile"
+                options: flick.profiles
+                value: Settings.powerAc
+                onPicked: v => Settings.powerAc = v
+            }
+            Choice {
+                visible: Battery.hasProfiles && Settings.powerAuto
+                label: "on battery"
+                keywords: "unplugged power profile"
+                options: flick.profiles
+                value: Settings.powerBat
+                onPicked: v => Settings.powerBat = v
+            }
         }
-        Choice {
-            visible: Battery.hasProfiles && Settings.powerAuto
-            label: "on AC"
-            keywords: "plugged in charger power profile"
-            options: flick.profiles
-            value: Settings.powerAc
-            onPicked: v => Settings.powerAc = v
-        }
-        Choice {
-            visible: Battery.hasProfiles && Settings.powerAuto
-            label: "on battery"
-            keywords: "unplugged power profile"
-            options: flick.profiles
-            value: Settings.powerBat
-            onPicked: v => Settings.powerBat = v
-        }
-        GpuSwitch { Layout.topMargin: 6 }
 
-        SectionLabel { text: "when idle"; keywords: "idle timeout sleep hypridle"; Layout.topMargin: 6 }
-        Timeout { label: "dim the screen"; keywords: "idle dim timeout"; key: "idleDim"; value: Idle.dim }
-        Timeout { label: "screen off"; keywords: "dpms display off idle timeout"; key: "idleOff"; value: Idle.screenOff }
-        Timeout { label: "lock"; keywords: "lock screen hyprlock idle timeout"; key: "idleLock"; value: Idle.lock }
-        Timeout { label: "suspend"; keywords: "sleep idle timeout"; key: "idleSuspend"; value: Idle.suspend; max: 3600 }
-        Switch {
-            label: "caffeine"
-            keywords: "stay awake keep awake inhibit idle"
-            hint: "keep the screen awake until turned off (not saved)"
-            checked: Toggles.caffeine
-            onToggled: on => Toggles.caffeine = on
+        GpuSwitch { cards: true }
+
+        Group {
+            title: "when idle"
+            keywords: "idle timeout sleep hypridle"
+            Timeout { label: "dim the screen"; keywords: "idle dim timeout"; key: "idleDim"; value: Idle.dim }
+            Timeout { label: "screen off"; keywords: "dpms display off idle timeout"; key: "idleOff"; value: Idle.screenOff }
+            Timeout { label: "lock"; keywords: "lock screen hyprlock idle timeout"; key: "idleLock"; value: Idle.lock }
+            Timeout { label: "suspend"; keywords: "sleep idle timeout"; key: "idleSuspend"; value: Idle.suspend; max: 3600 }
+            Switch {
+                label: "caffeine"
+                keywords: "stay awake keep awake inhibit idle"
+                hint: "keep the screen awake until turned off (not saved)"
+                checked: Toggles.caffeine
+                onToggled: on => Toggles.caffeine = on
+            }
         }
         Text {
             Layout.fillWidth: true
@@ -164,5 +179,6 @@ Flickable {
             font.family: Theme.ui
             font.pixelSize: 13
         }
+        Item { Layout.preferredHeight: 12 }
     }
 }

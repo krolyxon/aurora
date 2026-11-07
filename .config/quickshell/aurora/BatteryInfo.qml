@@ -3,8 +3,10 @@ import QtQuick.Layouts
 import Quickshell.Services.UPower
 
 // Battery block (SysPage, settings app > Power): charge in Doto, state, a segment bar (accent when low), details.
-ColumnLayout {
+// cards: on a card (the settings app); the panel shows it flat.
+Group {
     id: root
+    property bool cards: false
     readonly property var bat: UPower.displayDevice
     readonly property bool hasBat: bat !== null && bat.isPresent
     readonly property real batPct: hasBat ? (bat.percentage > 1 ? bat.percentage / 100 : bat.percentage) : 0
@@ -22,12 +24,15 @@ ColumnLayout {
         }
     }
     visible: hasBat
-    Layout.fillWidth: true
-    spacing: 12
+    title: "battery"
+    keywords: "charge level percentage health time left"
+    flat: !cards
+    spacing: cards ? 10 : 12
+    gap: 12
 
-    SectionLabel { text: "battery"; keywords: "charge level percentage health time left" }
     RowLayout {
-        Layout.leftMargin: 6
+        Layout.leftMargin: root.cards ? 18 : 6
+        Layout.topMargin: root.cards ? 12 : 0
         spacing: 14
         Num {
             text: Math.round(root.batPct * 100)
@@ -43,15 +48,16 @@ ColumnLayout {
         Layout.fillWidth: true
         Layout.preferredWidth: 100
         Layout.preferredHeight: 6
-        Layout.leftMargin: 6
-        Layout.rightMargin: 6
+        Layout.leftMargin: root.cards ? 18 : 6
+        Layout.rightMargin: root.cards ? 18 : 6
         n: 24
         f: root.batPct
         on: root.low ? Theme.err : Theme.fill
     }
     Lb {
         Layout.fillWidth: true
-        Layout.leftMargin: 6
+        Layout.leftMargin: root.cards ? 18 : 6
+        Layout.bottomMargin: root.cards ? 12 : 0
         wrapMode: Text.Wrap
         lineHeight: 1.5
         px: 10

@@ -140,19 +140,20 @@ Flickable {
     ColumnLayout {
         id: col
         width: flick.width
-        spacing: 8
+        spacing: 22
 
         // keep / revert bar after a monitor change
         Rectangle {
             Layout.fillWidth: true
             visible: flick.countdown > 0
-            implicitHeight: 40
+            implicitHeight: 56
+            radius: height / 2
             color: Theme.s2
             border.width: 1
             border.color: Theme.fill
             RowLayout {
                 anchors.fill: parent
-                anchors.margins: 6
+                anchors.margins: 10
                 Text {
                     Layout.fillWidth: true
                     Layout.leftMargin: 18
@@ -176,39 +177,46 @@ Flickable {
             font.pixelSize: 14
         }
 
-        SectionLabel { text: "layout"; keywords: "monitors screens" }
-        Choice {
-            label: "screens"
-            keywords: "monitors extend external laptop mirror"
-            options: [{ value: "extend", label: "extend" }, { value: "laptop", label: "laptop only" },
-                      { value: "external", label: "external only" }]
-            value: flick.layout
-            onPicked: x => flick.setLayout(x)
-        }
-        Text {
-            Layout.fillWidth: true
-            Layout.leftMargin: 18
-            text: "applies whenever a monitor is plugged in. external only turns the laptop panel back on when the last external screen is unplugged."
-            color: Theme.fgDim
-            wrapMode: Text.WordWrap
-            font.family: Theme.ui
-            font.pixelSize: 14
+        Group {
+            title: "layout"
+            keywords: "monitors screens"
+            Choice {
+                label: "screens"
+                keywords: "monitors extend external laptop mirror"
+                options: [{ value: "extend", label: "extend" }, { value: "laptop", label: "laptop only" },
+                          { value: "external", label: "external only" }]
+                value: flick.layout
+                onPicked: x => flick.setLayout(x)
+            }
+            Text {
+                Layout.fillWidth: true
+                Layout.leftMargin: 18
+                Layout.rightMargin: 18
+                Layout.bottomMargin: 10
+                text: "applies whenever a monitor is plugged in. external only turns the laptop panel back on when the last external screen is unplugged."
+                color: Theme.fgDim
+                wrapMode: Text.WordWrap
+                font.family: Theme.ui
+                font.pixelSize: 14
+            }
         }
 
         Repeater {
             model: flick.monitors
-            delegate: ColumnLayout {
+            // one card per monitor
+            delegate: Group {
                 id: mon
                 required property var modelData
                 readonly property var m: modelData
                 readonly property string curMode: m.width + "x" + m.height
-                Layout.fillWidth: true
-                spacing: 6
+                title: mon.m.name
+                gap: 8
 
-                SectionLabel { text: mon.m.name }
                 Text {
                     Layout.fillWidth: true
                     Layout.leftMargin: 18
+                    Layout.rightMargin: 18
+                    Layout.topMargin: 10
                     text: mon.m.description + (mon.m.disabled ? "  ·  disabled"
                         : "  ·  " + mon.curMode + " @ " + mon.m.refreshRate.toFixed(2) + "Hz  ·  scale " + mon.m.scale
                           + "  ·  at " + mon.m.x + "," + mon.m.y)
@@ -219,6 +227,8 @@ Flickable {
                 }
                 Text {
                     visible: !mon.m.disabled
+                    Layout.leftMargin: 18
+                    Layout.topMargin: 4
                     text: "mode"
                     color: Theme.fg
                     font.family: Theme.ui
@@ -226,6 +236,8 @@ Flickable {
                 }
                 Flow {
                     Layout.fillWidth: true
+                    Layout.leftMargin: 14
+                    Layout.rightMargin: 14
                     visible: !mon.m.disabled
                     spacing: 4
                     Repeater {
@@ -264,31 +276,38 @@ Flickable {
             }
         }
 
-        SectionLabel { text: "brightness & colour"; keywords: "backlight color" }
-        Knob {
-            visible: Bright.available
-            label: "laptop panel"
-            keywords: "brightness backlight screen"
-            unit: "%"
-            from: 1
-            to: 100
-            value: Bright.percent
-            onMoved: x => Bright.setPercent(x)
+        Group {
+            title: "brightness & colour"
+            keywords: "backlight color"
+            Knob {
+                visible: Bright.available
+                label: "laptop panel"
+                keywords: "brightness backlight screen"
+                unit: "%"
+                from: 1
+                to: 100
+                value: Bright.percent
+                onMoved: x => Bright.setPercent(x)
+            }
+            Switch {
+                visible: Toggles.hasNightLight
+                label: "night light"
+                keywords: "blue light warm redshift gammastep"
+                hint: "gammastep's warm colours (its schedule comes from ~/.config/gammastep)"
+                checked: Toggles.nightLight
+                onToggled: on => Toggles.setNightLight(on)
+            }
+            Text {
+                visible: !Toggles.hasNightLight
+                Layout.leftMargin: 18
+                Layout.topMargin: 12
+                Layout.bottomMargin: 12
+                text: "night light: gammastep isn't running"
+                color: Theme.fgDim
+                font.family: Theme.ui
+                font.pixelSize: 14
+            }
         }
-        Switch {
-            visible: Toggles.hasNightLight
-            label: "night light"
-            keywords: "blue light warm redshift gammastep"
-            hint: "gammastep's warm colours (its schedule comes from ~/.config/gammastep)"
-            checked: Toggles.nightLight
-            onToggled: on => Toggles.setNightLight(on)
-        }
-        Text {
-            visible: !Toggles.hasNightLight
-            text: "night light: gammastep isn't running"
-            color: Theme.fgDim
-            font.family: Theme.ui
-            font.pixelSize: 14
-        }
+        Item { Layout.preferredHeight: 12 }
     }
 }
