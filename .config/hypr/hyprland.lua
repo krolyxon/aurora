@@ -27,7 +27,6 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("gsettings set org.gnome.desktop.interface font-name 'JetBrainsMonoNL Nerd Font Mono 11'")   -- Space fonts are aurora's only
     hl.exec_cmd("wl-paste --type text --watch cliphist store")
     hl.exec_cmd("wl-paste --type image --watch cliphist store")
-    hl.exec_cmd("hyprpm reload -n")
     -- aurora is a systemd unit: hand it the login env (.zprofile: SUDO_ASKPASS, EDITOR, XDG dirs, ...)
     hl.exec_cmd("dbus-update-activation-environment --systemd --all && systemctl --user start aurora-shell")
     -- hl.exec_cmd("waybar")
@@ -43,10 +42,24 @@ end)
 -- Plugins
 --------------------------------------------------
 package.path = package.path .. ";./?.lua;./?/init.lua"
-smw = require("plugins.split-monitor-workspaces")
-smw.setup({
-    workspace_count = 10,
-})
+-- split-monitor-workspaces is a git checkout in ~/.config/hypr/plugins, not in this repo (hypr_update_plugins.sh).
+-- Missing (fresh install) = plain workspaces 1-10 with the same API for keybinds.lua, and fetch it + reload,
+-- instead of a require error that leaves Hyprland in emergency mode with no binds.
+local smw_ok, smw_mod = pcall(require, "plugins.split-monitor-workspaces")
+if smw_ok then
+    smw = smw_mod
+    smw.setup({
+        workspace_count = 10,
+    })
+else
+    local function ws(n) return n == "0" and "10" or n end   -- keybinds.lua binds workspace 10 to SUPER+0
+    smw = {
+        get_amount_of_workspaces = function() return 10 end,
+        workspace = function(n) return hl.dsp.focus({ workspace = ws(n) }) end,
+        move_to_workspace_silent = function(n) return hl.dsp.window.move({ workspace = ws(n), follow = false }) end,
+    }
+    hl.exec_cmd(HOME .. "/.local/bin/hypr/hypr_update_plugins.sh && hyprctl reload")
+end
 
 -- -----------------------------------------------------
 -- SOURCE FILES
