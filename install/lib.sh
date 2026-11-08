@@ -19,7 +19,8 @@ log() {
 }
 
 usage() {
-    sed -n '3,19s/^# \{0,1\}//p' "$0"
+    # install.sh's header comment, up to the first line that isn't a comment
+    sed -n '3,/^[^#]/s/^# \{0,1\}//p' "$currentDir/install.sh"
 }
 
 ###################
@@ -89,4 +90,32 @@ confirm() {
         return 0
     fi
     gum confirm --default=false "$msg"
+}
+
+# Package pickers -> SELECTED_PKGS (desktop.txt is always installed, it has no picker).
+# --picks FILE (from the full install) replaces them.
+pick_packages() {
+    SELECTED_PKGS=()
+    if [[ -n "$PICKS" ]]; then
+        gum_to_array SELECTED_PKGS < "$PICKS"
+        return
+    fi
+
+    local list picked
+    for list in utils dev gpu optional aur; do
+        case "$list" in
+            utils)    prompt_style "Important utilities (Most likely go with defaults)" ;;
+            dev)      prompt_style "Select Development Tools" ;;
+            gpu)      prompt_style "Select GPU drivers" ;;
+            optional) prompt_style "Select Optional Desktop Packages" ;;
+            aur)      prompt_style "Select AUR packages" ;;
+        esac
+
+        if ((AUTO_YES)); then
+            mapfile -t picked < <(preselected "$list")
+        else
+            gum_to_array picked < <(choose_packages "$list")
+        fi
+        SELECTED_PKGS+=("${picked[@]}")
+    done
 }

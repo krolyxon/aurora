@@ -1,6 +1,10 @@
 # shellcheck shell=bash
 # Desktop part: packages, dotfiles (stow), zsh, services. Sourced by install.sh;
 # runs as the user, asks for sudo when it needs it.
+# AURORA_CHROOT=1: run by the full install inside the new system's chroot (unattended,
+# nothing is running there yet: no --now, no user bus).
+
+IN_CHROOT="${AURORA_CHROOT:-0}"
 
 #################
 ## GATEKEEPING ##
@@ -51,8 +55,25 @@ check_fresh_system() {
     read -rp "Type 'I understand' to continue anyway: " answer
     [[ "$answer" == "I understand" ]] || { log WARN "Aborted."; exit 1; }
 }
-check_fresh_system
+((IN_CHROOT)) || check_fresh_system
 
+
+# Enable a unit (--user: a user unit). In the chroot nothing runs yet:
+# no --now, and user units are enabled offline (--root writes the links into $HOME).
+enable_unit() {
+    if [[ "$1" == --user ]]; then
+        shift
+        if ((IN_CHROOT)); then
+            systemctl --user --root=/ enable "$@"
+        else
+            systemctl --user daemon-reload && systemctl --user enable "$@"
+        fi
+    elif ((IN_CHROOT)); then
+        sudo systemctl enable "$@"
+    else
+        sudo systemctl enable --now "$@"
+    fi
+}
 
 install_prerequisites() {
     sudo pacman -S --needed --noconfirm stow gum git zsh
@@ -88,31 +109,18 @@ This script is provided AS IS, WITHOUT ANY WARRANTY. It will:
 Proceed at your OWN RISK."
 )
 
-confirm "$DISCLAIMER
+# The full install showed its own summary already
+if ! ((IN_CHROOT)); then
+    confirm "$DISCLAIMER
 
 Do you understand the risks and want to continue?" || exit 1
+fi
 
 
 #######################
 ## Package selection ##
 #######################
-SELECTED_PKGS=()
-for list in utils dev gpu optional aur; do
-    case "$list" in
-        utils)    prompt_style "Important utilities (Most likely go with defaults)" ;;
-        dev)      prompt_style "Select Development Tools" ;;
-        gpu)      prompt_style "Select GPU drivers" ;;
-        optional) prompt_style "Select Optional Desktop Packages" ;;
-        aur)      prompt_style "Select AUR packages" ;;
-    esac
-
-    if ((AUTO_YES)); then
-        mapfile -t picked < <(preselected "$list")
-    else
-        gum_to_array picked < <(choose_packages "$list")
-    fi
-    SELECTED_PKGS+=("${picked[@]}")
-done
+pick_packages
 
 
 ##########################
@@ -160,11 +168,16 @@ Proceed with system configuration (stow, shell)?"; then
         && log SUCCESS "Dotfiles stowed successfully" \
         || log ERROR "Stow failed"
 
+    # Hyprland's Lua plugins are git checkouts, not in this repo (hyprland.lua also fetches them when missing)
+    "$currentDir/.local/bin/hypr/hypr_update_plugins.sh" \
+        && log SUCCESS "Hyprland plugins installed" \
+        || log WARN "Couldn't fetch the Hyprland plugins, Hyprland fetches them at its first start"
+
     #################################
     ## Change default shell to zsh ##
     #################################
     log INFO "Changing the default shell to ZSH"
-    if [[ "$SHELL" != "$(command -v zsh)" ]]; then
+    if [[ "$(getent passwd "$USER" | cut -d: -f7)" != "$(command -v zsh)" ]]; then
         chsh -s "$(command -v zsh)" \
             && log SUCCESS "Default shell successfully set to zsh" \
             || log ERROR "Default shell could not be set to zsh"
@@ -190,16 +203,22 @@ if ((${#ALL_PKGS[@]})); then
     if confirm "Install all the selected packages?"; then
         log INFO "Installing selected packages..."
 
+        # --yes: no prompts at all (makepkg, paru's review and provider questions take their defaults)
+        noconfirm=()
+        ((AUTO_YES)) && noconfirm=(--noconfirm)
+
         ## Installing paru if not installed already
         if ! command -v paru >/dev/null 2>&1; then
             log INFO "Installing Paru (AUR package manager)"
             sudo pacman -S --needed --noconfirm base-devel
-            git clone https://aur.archlinux.org/paru.git
-            (cd paru && makepkg -sri)
-            rm -rf paru
+            build="$(mktemp -d)"
+            git clone https://aur.archlinux.org/paru.git "$build/paru" \
+                && (cd "$build/paru" && makepkg -sri "${noconfirm[@]}")
+            rm -rf "$build"
         fi
 
-        if paru -Syu --needed "${ALL_PKGS[@]}"; then
+        ((AUTO_YES)) && noconfirm+=(--skipreview)
+        if paru -Syu --needed "${noconfirm[@]}" "${ALL_PKGS[@]}"; then
             INSTALL_STATUS="complete"
         else
             INSTALL_STATUS="failed"
@@ -221,8 +240,8 @@ fi
 if command -v keyd >/dev/null 2>&1; then
     if confirm "Configure and enable keyd? "; then
         log INFO "Copying keyd configuration to /etc/keyd/default.conf"
-        sudo cp "$currentDir/system/etc/keyd/default.conf" /etc/keyd/
-        sudo systemctl enable --now keyd.service \
+        sudo install -Dm644 "$currentDir/system/etc/keyd/default.conf" /etc/keyd/default.conf
+        enable_unit keyd.service \
             && log SUCCESS "Successfully enabled keyd.service" \
             || log ERROR "Couldn't enable keyd.service"
     fi
@@ -242,6 +261,26 @@ if confirm "Unlock GNOME keyring at login (writes /etc/pam.d/login and passwd)?"
 fi
 
 
+##############
+## Services ##
+##############
+# What the desktop expects to be running (all optional packages: only if installed)
+if confirm "Enable bluetooth, power-profiles-daemon and mpd-mpris (if installed)?"; then
+    for unit in bluetooth power-profiles-daemon; do
+        [[ -f "/usr/lib/systemd/system/$unit.service" ]] || continue
+        enable_unit "$unit.service" \
+            && log SUCCESS "Enabled $unit.service" \
+            || log ERROR "Couldn't enable $unit.service"
+    done
+    # media keys reach mpd through mpd-mpris (playerctl)
+    if [[ -f /usr/lib/systemd/user/mpd-mpris.service ]]; then
+        enable_unit --user mpd-mpris.service \
+            && log SUCCESS "Enabled mpd-mpris.service" \
+            || log ERROR "Couldn't enable mpd-mpris.service"
+    fi
+fi
+
+
 #########################
 ## Enable aurora shell ##
 #########################
@@ -249,8 +288,7 @@ fi
 # enabling it also ties it to graphical-session.target. No --now: no session yet.
 if [[ -f "$HOME/.config/systemd/user/aurora-shell.service" ]]; then
     if confirm "Enable aurora-shell.service (the desktop shell)?"; then
-        systemctl --user daemon-reload
-        systemctl --user enable aurora-shell.service \
+        enable_unit --user aurora-shell.service \
             && log SUCCESS "Successfully enabled aurora-shell.service" \
             || log ERROR "Couldn't enable aurora-shell.service (run 'systemctl --user enable aurora-shell' after logging in)"
     fi
@@ -306,3 +344,6 @@ Check the logs above.$BACKUP_NOTE"
         gum style --bold "Finished.$BACKUP_NOTE"
         ;;
 esac
+
+# the full install looks at this
+[[ "$INSTALL_STATUS" != failed ]]
