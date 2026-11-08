@@ -1,7 +1,7 @@
 # AUR packages (installed with paru). A trailing ! means "not pre-selected".
+paru # builds itself when missing (install.sh), then paru updates it
 envycontrol
 htop-vim
 jmtpfs
 zsh-fast-syntax-highlighting-git
 claude-code
-remage-bin

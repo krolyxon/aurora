@@ -1,6 +1,6 @@
-# Reference only: install.sh never installs these.
-# archinstall (or a manual install) sets them up; they're listed so `./install.sh --check`
-# doesn't report them as drift.
+# Base system: the full install (from the Arch ISO) pacstraps exactly this list,
+# plus the CPU's microcode (intel-ucode / amd-ucode). On a system installed some
+# other way they're listed so `./install.sh --check` doesn't report them as drift.
 base
 base-devel
 linux
@@ -11,8 +11,9 @@ grub
 efibootmgr
 os-prober
 networkmanager
+sudo
+zram-generator
 git
 zsh
 stow
 gum
-paru
