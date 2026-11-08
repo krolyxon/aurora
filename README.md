@@ -53,16 +53,33 @@ itself as mono dots, colour dots or the plain photo.
 > or support for other setups. It's public as a **reference**, or for people who want **exactly the same
 > setup** as me.
 >
-> **Only run `install.sh` on a freshly installed, unconfigured Arch Linux system.** It installs a lot of
-> packages (NVIDIA drivers included if you pick them), replaces your configs with symlinks, changes your login
-> shell and can enable system services. Don't run it on a system you already use.
+> **From the Arch ISO, `install.sh` erases the disk you pick.** On an installed system, only run it on a
+> freshly installed, unconfigured Arch Linux: it installs a lot of packages (NVIDIA drivers included if you pick
+> them), replaces your configs with symlinks, changes your login shell and can enable system services.
+> Don't run it on a system you already use.
 
-## Installing (fresh Arch only)
+## Installing
+### From the Arch ISO (everything)
+Boot the [Arch ISO](https://archlinux.org/download/) in UEFI mode, get online (`iwctl` for Wi-Fi), then:
+```bash
+bash <(curl -fsSL https://git.krolyxon.com/aurora/raw/master/install.sh)
+```
+It asks everything first, shows a summary and only starts after you type the disk's name. Then it runs on its own:
+- disk: **auto** erases a whole disk (1 GiB EFI at `/boot` + the rest), **manual** runs cfdisk and lets you pick
+  the partitions (an existing EFI partition is kept unformatted for dual boot)
+- optional LUKS2 encryption, ext4, zram instead of a swap partition
+- `packages/base.txt` + CPU microcode, `linux-zen` (default) and `linux` (fallback), GRUB
+- your user with sudo, timezone/locale/keymap, NetworkManager (Wi-Fi joined with `iwctl` carries over)
+- the desktop part below, inside the new system, so you reboot straight into Hyprland + aurora (log in on tty1)
+
+`./install.sh --base` does only the base system. The log ends up in `/var/log/aurora-install.log`.
+
+### On an installed Arch (desktop only)
 ```bash
 git clone https://git.krolyxon.com/aurora ~/aurora
 cd ~/aurora
-./install.sh           # interactive: pick packages per group
-./install.sh --yes     # pre-select the default packages, no pickers
+./install.sh           # interactive: pick packages per group (same as --desktop)
+./install.sh --yes     # pre-select the default packages, no questions
 ./install.sh --check   # only compare installed packages with the lists, changes nothing
 ```
 Clone it anywhere (e.g. `~/dev/aurora`): the repo's `.stowrc` points stow at `$HOME`. Re-stow by hand with `stow .`
@@ -80,7 +97,7 @@ The lists live in `packages/*.txt`: one package per line, `#` for comments, and 
 | `gpu.txt` | Intel + NVIDIA (`nvidia-open-dkms`) drivers. Change this for your hardware |
 | `optional.txt` | desktop apps |
 | `aur.txt` | AUR packages (installed with paru) |
-| `base.txt` | reference only, never installed: what the base install already provides |
+| `base.txt` | the base system: what the install from the ISO pacstraps |
 
 ## What's inside
 | | |
