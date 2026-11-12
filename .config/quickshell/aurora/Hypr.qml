@@ -26,8 +26,8 @@ Singleton {
     // so focus the target first and then move the active one
     function moveWindow(a, ws) {
         if (luaSyntax)
-            Quickshell.execDetached(["hyprctl", "--batch",
-                'dispatch hl.dsp.focus({window="address:' + addr(a) + '"}); dispatch hl.dsp.window.move({workspace=' + Number(ws) + '})'])
+            Quickshell.execDetached(["hyprctl", "dispatch",
+                'hl.dsp.window.move({workspace=' + Number(ws) + ', follow=false, window="address:' + addr(a) + '"})'])
         else
             Quickshell.execDetached(["hyprctl", "dispatch", "movetoworkspacesilent", Number(ws) + ",address:" + addr(a)])
     }
