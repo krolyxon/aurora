@@ -96,6 +96,7 @@ The lists live in `packages/*.txt`: one package per line, `#` for comments, and 
 | `dev.txt` | development tools |
 | `gpu.txt` | Intel + NVIDIA (`nvidia-open-dkms`) drivers. Change this for your hardware |
 | `optional.txt` | desktop apps |
+| `games.txt` | Steam, lib32 drivers, gamemode. Only if you say yes to Steam; enables `[multilib]` |
 | `aur.txt` | AUR packages (installed with paru) |
 | `base.txt` | the base system: what the install from the ISO pacstraps |
 

@@ -1,0 +1,12 @@
+# Steam and gaming. Only offered when you say yes to Steam: these need the multilib
+# repo (32-bit), which install.sh then enables in /etc/pacman.conf.
+# The lib32 drivers match gpu.txt (Intel + NVIDIA): change them for your hardware.
+steam
+vulkan-intel
+lib32-vulkan-intel
+lib32-nvidia-utils
+gamemode
+lib32-gamemode
+mangohud !
+lib32-mangohud !
+gamescope !

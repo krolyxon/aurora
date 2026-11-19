@@ -202,6 +202,7 @@ ALL_PKGS=(
 if ((${#ALL_PKGS[@]})); then
     if confirm "Install all the selected packages?"; then
         log INFO "Installing selected packages..."
+        enable_multilib_if_needed
 
         # --yes: no prompts at all (makepkg, paru's review and provider questions take their defaults)
         noconfirm=()

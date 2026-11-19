@@ -118,4 +118,30 @@ pick_packages() {
         fi
         SELECTED_PKGS+=("${picked[@]}")
     done
+
+    # Steam is opt-in (it needs multilib), so --yes leaves it out
+    if ((!AUTO_YES)) && confirm "Install Steam and gaming packages? (enables the multilib repo)"; then
+        prompt_style "Select gaming packages"
+        gum_to_array picked < <(choose_packages games)
+        SELECTED_PKGS+=("${picked[@]}")
+    fi
+}
+
+# Steam and the lib32 drivers live in [multilib]; enable it when a games.txt package is picked
+enable_multilib_if_needed() {
+    local pkg
+    for pkg in "${SELECTED_PKGS[@]}"; do
+        read_list games | grep -qx "$pkg" && break
+        pkg=""
+    done
+    [[ -n "$pkg" ]] || return 0
+    grep -q '^\[multilib\]' /etc/pacman.conf && return 0
+
+    log INFO "Enabling the multilib repository in /etc/pacman.conf (needed by $pkg)"
+    sudo sed -i '/^#\[multilib\]/,/^#Include/ s/^#//' /etc/pacman.conf
+    if grep -q '^\[multilib\]' /etc/pacman.conf; then
+        log SUCCESS "multilib enabled"
+    else
+        log ERROR "Couldn't enable multilib: uncomment [multilib] in /etc/pacman.conf by hand"
+    fi
 }
