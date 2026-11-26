@@ -8,7 +8,7 @@ button.suggested-action { color: @accent_fg_color; }
 button.suggested-action.flat { color: @accent_color; }
 button.suggested-action:disabled { color: alpha(@window_fg_color, 0.5); }
 
-/* menus (pcmanfm's, librewolf's context menus): round s1 card, items as inset pills, hover s3 */
+/* menus (pcmanfm's context menus): round s1 card, items as inset pills, hover s3 */
 menu, .menu, .context-menu { border-radius: 18px; padding: 6px; border: 1px solid @aurora_s3; background-color: @aurora_s1; }
 menu menuitem, .menu menuitem, .context-menu menuitem { border-radius: 999px; padding: 5px 12px; }
 menu menuitem:hover, .menu menuitem:hover, .context-menu menuitem:hover { background-color: @aurora_s3; color: @aurora_fg; }
@@ -20,7 +20,7 @@ menu separator, .menu separator, .context-menu separator {
     background-repeat: repeat-x;
 }
 
-/* file chooser (xdg-desktop-portal-gtk, librewolf) and pcmanfm: places as pills, the path bar a size down */
+/* file chooser (xdg-desktop-portal-gtk, brave) and pcmanfm: places as pills, the path bar a size down */
 placessidebar row, .sidebar row { border-radius: 999px; }
 .path-bar button { font-size: 12px; }
 frame > border { border-radius: 16px; }

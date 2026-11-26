@@ -127,7 +127,7 @@ PanelWindow {
     // ---- sources ----
     function basename(p) { p = String(p); return p.substring(p.lastIndexOf("/") + 1) }
 
-    // desktop entries + their actions ("Librewolf: New Private Window")
+    // desktop entries + their actions ("Brave: New Private Window")
     property var apps: []
     function loadApps() {
         var out = [], l = DesktopEntries.applications.values

@@ -5,3 +5,4 @@ htop-vim
 jmtpfs
 zsh-fast-syntax-highlighting-git
 claude-code
+brave-bin

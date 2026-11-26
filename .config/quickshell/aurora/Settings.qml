@@ -13,7 +13,7 @@ Singleton {
     readonly property var defaults: ({
         barAlpha: 1.0, panelAlpha: 1.0, matuScheme: "scheme-content", matuContrast: 0.0,
         osdTimeout: 1500, desktopClock: true, desktopViz: true, vizBars: 64,
-        dock: true, dockPinned: ["foot", "librewolf", "pcmanfm", "obsidian"], wallFolder: "dusky-dark",
+        dock: true, dockPinned: ["foot", "brave-browser", "pcmanfm", "obsidian"], wallFolder: "dusky-dark",
         notifSound: true, notifVolume: 0.7,
         idleDim: 150, idleOff: 330, idleLock: 600, idleSuspend: 0, charTone: 0, portalAutoOpen: true,
         chargeMode: "off", batLow: 15, batCritical: 5, batCriticalAction: "none",
@@ -96,7 +96,7 @@ Singleton {
             property bool desktopViz: true
             property int vizBars: 64
             property bool dock: true
-            property list<string> dockPinned: ["foot", "librewolf", "pcmanfm", "obsidian"]
+            property list<string> dockPinned: ["foot", "brave-browser", "pcmanfm", "obsidian"]
             property string wallFolder: "dusky-dark"
             property bool notifSound: true
             property real notifVolume: 0.7

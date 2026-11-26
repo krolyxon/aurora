@@ -1,5 +1,4 @@
 # Desktop apps. A trailing ! means "not pre-selected".
-librewolf
 obsidian
 syncthing
 libreoffice-fresh

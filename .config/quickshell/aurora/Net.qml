@@ -35,7 +35,7 @@ Singleton {
 
     // ---- captive portal ----------------------------------------------
     // NetworkManager's connectivity check (`nmcli monitor`) says *that* there is a portal; a curl probe
-    // finds *where* (the redirect). Opening the real URL matters: librewolf's HTTPS-only mode upgrades a
+    // finds *where* (the redirect). Opening the real URL matters: the browser's HTTPS-only mode upgrades a
     // plain http:// test page, so the portal never gets to intercept it.
     readonly property string probeUrl: "http://connectivitycheck.gstatic.com/generate_204"
     property string connectivity: "unknown"   // none | portal | limited | full | unknown

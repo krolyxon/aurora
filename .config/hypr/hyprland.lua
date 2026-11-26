@@ -1,6 +1,6 @@
 terminal = "foot"
 menu = "aurora-run"   -- aurora's runner
-browser = "librewolf"
+browser = "brave"
 mainMod = "SUPER"
 
 -- -----------------------------------------------------
