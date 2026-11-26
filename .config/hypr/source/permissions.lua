@@ -10,6 +10,13 @@ hl.permission({
     mode = "allow",
 })
 
+-- aurora's screen recording (Rec.qml)
+hl.permission({
+    binary = "/usr/(bin|local/bin)/wf-recorder",
+    type = "screencopy",
+    mode = "allow",
+})
+
 hl.permission({
     binary = "/usr/(bin|local/bin)/hyprlock",
     type = "screencopy",
